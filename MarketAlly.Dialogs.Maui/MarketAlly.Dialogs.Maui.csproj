@@ -30,7 +30,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>MarketAlly.Dialogs.Maui</PackageId>
     <Title>MarketAlly Dialogs for .NET MAUI</Title>
-    <Version>1.0.0</Version>
+    <Version>1.0.2</Version>
     <Authors>David H Friedel Jr</Authors>
     <Company>MarketAlly</Company>
     <Description>A comprehensive, production-ready dialog library for .NET MAUI applications featuring 7 dialog types (Alert, Confirm, Prompt, Editor, Loading, ActionList, ColorPicker), built-in theming with dark/light mode support, internationalization (English, Spanish, French, German), custom icons, and extensive customization options. Supports iOS, Android, Windows, and macOS.</Description>
@@ -70,7 +70,7 @@ Initial release v1.0.0:
     <!-- <None Include="icon.png" Pack="true" PackagePath="\" /> -->
   </ItemGroup>
 
-  <!-- Include images as MauiImage for proper SVG handling -->
+  <!-- Include images for both development and NuGet distribution -->
   <ItemGroup>
 		<None Include="icon.png">
 			<Pack>true</Pack>
@@ -78,8 +78,13 @@ Initial release v1.0.0:
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<Visible>true</Visible>
 		</None>
-    <MauiImage Include="Resources\Images\*.svg" />
-    <MauiImage Include="Resources\Images\*.png" />
+    <!-- For development: MauiImage processes PNGs -->
+    <MauiImage Include="Resources\Images\*.png" BaseSize="48,48" />
+
+    <!-- For NuGet: Embed PNGs as resources that will work from the package -->
+    <EmbeddedResource Include="Resources\Images\*.png">
+      <LogicalName>%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\" />

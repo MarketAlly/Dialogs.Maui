@@ -112,74 +112,62 @@ namespace MarketAlly.Dialogs.Maui.Core
             if (string.IsNullOrEmpty(iconSource))
                 return null;
 
-            // When using MauiImage, we can reference the image by its filename
-            // Different platforms may require different approaches
+            // For development and test app, try file-based loading first
             var imageName = iconSource.Replace(".svg", "").Replace(".png", "");
 
-            // Try different approaches for loading the image
-            ImageSource? imageSource = null;
-
+            try
+            {
 #if WINDOWS
-            // Windows often has issues with SVG rendering, try multiple approaches
-            System.Diagnostics.Debug.WriteLine($"[WINDOWS ICON] Trying to load icon: {imageName}");
-
-            try
-            {
-                // First try with .png extension (MauiImage converts SVG to PNG on Windows)
-                var pngName = imageName + ".png";
-                System.Diagnostics.Debug.WriteLine($"[WINDOWS ICON] Trying: {pngName}");
-                imageSource = ImageSource.FromFile(pngName);
-                if (imageSource != null)
+                // Windows needs the .png extension for MauiImage
+                var windowsImageName = imageName + ".png";
+                var windowsSource = ImageSource.FromFile(windowsImageName);
+                if (windowsSource != null)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[WINDOWS ICON] Success with: {pngName}");
-                    return imageSource;
+                    System.Diagnostics.Debug.WriteLine($"[ICON] Loaded from file (Windows): {windowsImageName}");
+                    return windowsSource;
                 }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[WINDOWS ICON] Failed .png: {ex.Message}");
-            }
-
-            try
-            {
-                // Try with .scale-100.png (Windows naming convention)
-                var scaleName = imageName + ".scale-100.png";
-                System.Diagnostics.Debug.WriteLine($"[WINDOWS ICON] Trying: {scaleName}");
-                imageSource = ImageSource.FromFile(scaleName);
-                if (imageSource != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[WINDOWS ICON] Success with: {scaleName}");
-                    return imageSource;
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[WINDOWS ICON] Failed .scale-100.png: {ex.Message}");
-            }
-
-            try
-            {
-                // Try without extension
-                System.Diagnostics.Debug.WriteLine($"[WINDOWS ICON] Trying: {imageName}");
-                imageSource = ImageSource.FromFile(imageName);
-                if (imageSource != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[WINDOWS ICON] Success with: {imageName}");
-                    return imageSource;
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[WINDOWS ICON] Failed no extension: {ex.Message}");
-            }
-
-            // Fallback: try original source name
-            System.Diagnostics.Debug.WriteLine($"[WINDOWS ICON] Fallback trying: {iconSource}");
-            return ImageSource.FromFile(iconSource);
 #else
-            // Android and iOS work with just the filename (no extension)
-            return ImageSource.FromFile(imageName);
+                // Android/iOS work with just the base name (no extension)
+                var fileSource = ImageSource.FromFile(imageName);
+                if (fileSource != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ICON] Loaded from file: {imageName}");
+                    return fileSource;
+                }
 #endif
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ICON] File load failed: {ex.Message}");
+            }
+
+            // Fallback: Try to load from embedded resources (for NuGet package)
+            try
+            {
+                var assembly = typeof(BaseDialog).Assembly;
+                var resourceName = System.IO.Path.GetFileName(iconSource);
+
+                System.Diagnostics.Debug.WriteLine($"[ICON] Trying embedded resource: {resourceName}");
+
+                var stream = assembly.GetManifestResourceStream(resourceName);
+                if (stream != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ICON] Success loading embedded resource: {resourceName}");
+                    var memoryStream = new System.IO.MemoryStream();
+                    stream.CopyTo(memoryStream);
+                    memoryStream.Position = 0;
+                    stream.Dispose();
+                    return ImageSource.FromStream(() => memoryStream);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ICON] Embedded resource load failed: {ex.Message}");
+            }
+
+            // If all else fails, return null (no icon will be shown)
+            System.Diagnostics.Debug.WriteLine($"[ICON] All attempts failed for: {iconSource}");
+            return null;
         }
 
         /// <summary>

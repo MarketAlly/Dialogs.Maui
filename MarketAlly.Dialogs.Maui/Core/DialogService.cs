@@ -140,16 +140,16 @@ namespace MarketAlly.Dialogs.Maui.Core
                 return isDarkTheme ? customIcon.DarkIcon : customIcon.LightIcon;
             }
 
-            // Return default icons with extensions for embedded resources
+            // Return default icons (using PNG for reliable NuGet distribution)
             return dialogType switch
             {
-                DialogType.Error => isDarkTheme ? "error_outline_white_48dp.svg" : "error_outline_black_48dp.svg",
-                DialogType.Warning => isDarkTheme ? "warning_amber_white_48dp.svg" : "warning_amber_black_48dp.svg",
-                DialogType.Success => isDarkTheme ? "task_alt_white_48dp.svg" : "task_alt_black_48dp.svg",
-                DialogType.Info => isDarkTheme ? "info_white_48dp.svg" : "info_black_48dp.svg",
-                DialogType.Help => isDarkTheme ? "help_outline_white_48dp.svg" : "help_outline_black_48dp.svg",
-                DialogType.Decide => isDarkTheme ? "fork_right_white_48dp.svg" : "fork_right_black_48dp.svg",
-                DialogType.Stop => isDarkTheme ? "pan_tool_white_48dp.svg" : "pan_tool_black_48dp.svg",
+                DialogType.Error => isDarkTheme ? "error_outline_white_48dp.png" : "error_outline_black_48dp.png",
+                DialogType.Warning => isDarkTheme ? "warning_amber_white_48dp.png" : "warning_amber_black_48dp.png",
+                DialogType.Success => isDarkTheme ? "task_alt_white_48dp.png" : "task_alt_black_48dp.png",
+                DialogType.Info => isDarkTheme ? "info_white_48dp.png" : "info_black_48dp.png",
+                DialogType.Help => isDarkTheme ? "help_outline_white_48dp.png" : "help_outline_black_48dp.png",
+                DialogType.Decide => isDarkTheme ? "fork_right_white_48dp.png" : "fork_right_black_48dp.png",
+                DialogType.Stop => isDarkTheme ? "pan_tool_white_48dp.png" : "pan_tool_black_48dp.png",
                 _ => null
             };
         }

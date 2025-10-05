@@ -303,10 +303,10 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         {
             var isDarkTheme = DialogService.CurrentTheme == DialogService.DarkTheme;
 
-            // Load eye icons from embedded resources
+            // Load eye icons from embedded resources (using PNG for reliability)
             var iconName = isHidden
-                ? (isDarkTheme ? "eye_white.svg" : "eye_black.svg")
-                : (isDarkTheme ? "eye_off_white.svg" : "eye_off_black.svg");
+                ? (isDarkTheme ? "eye_white.png" : "eye_black.png")
+                : (isDarkTheme ? "eye_off_white.png" : "eye_off_black.png");
 
             var assembly = typeof(PromptDialog).Assembly;
 

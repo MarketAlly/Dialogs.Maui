@@ -314,26 +314,40 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         {
             if (value is string iconSource && !string.IsNullOrEmpty(iconSource))
             {
-                // Remove extensions to get base name
+                // For development, try file-based loading first
                 var imageName = iconSource.Replace(".svg", "").Replace(".png", "");
 
-#if WINDOWS
-                // Try different approaches for Windows
                 try
                 {
-                    // First try with .png extension
-                    var pngName = imageName + ".png";
-                    return ImageSource.FromFile(pngName);
-                }
-                catch
-                {
-                    // Fallback to base name
-                    return ImageSource.FromFile(imageName);
-                }
+#if WINDOWS
+                    // Windows needs the .png extension
+                    var fileSource = ImageSource.FromFile(imageName + ".png");
 #else
-                // Android and iOS work with just the filename
-                return ImageSource.FromFile(imageName);
+                    // Android/iOS work with just the base name
+                    var fileSource = ImageSource.FromFile(imageName);
 #endif
+                    if (fileSource != null)
+                        return fileSource;
+                }
+                catch { }
+
+                // Try to load from embedded resources (for NuGet package)
+                try
+                {
+                    var assembly = typeof(ActionListDialog).Assembly;
+                    var resourceName = System.IO.Path.GetFileName(iconSource);
+
+                    var stream = assembly.GetManifestResourceStream(resourceName);
+                    if (stream != null)
+                    {
+                        var memoryStream = new System.IO.MemoryStream();
+                        stream.CopyTo(memoryStream);
+                        memoryStream.Position = 0;
+                        stream.Dispose();
+                        return ImageSource.FromStream(() => memoryStream);
+                    }
+                }
+                catch { }
             }
 
             return null;
