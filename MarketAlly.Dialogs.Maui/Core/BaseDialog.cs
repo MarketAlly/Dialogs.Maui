@@ -112,68 +112,46 @@ namespace MarketAlly.Dialogs.Maui.Core
             if (string.IsNullOrEmpty(iconSource))
                 return null;
 
-            // For development and test app, try file-based loading first
-            var imageName = iconSource.Replace(".svg", "").Replace(".png", "");
+            // Create a cache key based on the icon source
+            var cacheKey = $"{iconSource}_{isDarkTheme}";
 
-            try
+            return ImageCache.GetOrCreate(cacheKey, () =>
             {
-#if WINDOWS
-                // Windows needs the .png extension for MauiImage
-                var windowsImageName = imageName + ".png";
-                var windowsSource = ImageSource.FromFile(windowsImageName);
-                if (windowsSource != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[ICON] Loaded from file (Windows): {windowsImageName}");
-                    return windowsSource;
-                }
-#else
-                // Android/iOS work with just the base name (no extension)
-                var fileSource = ImageSource.FromFile(imageName);
-                if (fileSource != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[ICON] Loaded from file: {imageName}");
-                    return fileSource;
-                }
-#endif
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[ICON] File load failed: {ex.Message}");
-            }
-
-            // Fallback: Try to load from embedded resources (for NuGet package)
-            try
-            {
-                var assembly = typeof(BaseDialog).Assembly;
+                // ALWAYS use embedded resources to ensure icons work in NuGet consumers
                 var pngFileName = System.IO.Path.GetFileName(iconSource);
-
-                // EmbeddedResource uses the folder structure as namespace
                 var resourceName = $"MarketAlly.Dialogs.Maui.Resources.Images.{pngFileName}";
-                System.Diagnostics.Debug.WriteLine($"[ICON] Trying embedded resource: {resourceName}");
-                var stream = assembly.GetManifestResourceStream(resourceName);
 
-                if (stream != null)
+                // Check if resource exists first (fast cached check)
+                if (ImageCache.ResourceExists(resourceName))
                 {
-                    System.Diagnostics.Debug.WriteLine($"[ICON] Success loading embedded resource");
-                    var memoryStream = new System.IO.MemoryStream();
-                    stream.CopyTo(memoryStream);
-                    memoryStream.Position = 0;
-                    stream.Dispose();
-                    return ImageSource.FromStream(() => memoryStream);
+                    // Get cached bytes or load them
+                    var buffer = ImageCache.GetResourceBytes(resourceName);
+                    if (buffer != null)
+                    {
+                        // Return a stream source that creates a new stream each time
+                        return ImageSource.FromStream(() => new System.IO.MemoryStream(buffer));
+                    }
                 }
 
-                // Debug: List all available embedded resources
-                var resources = assembly.GetManifestResourceNames();
-                System.Diagnostics.Debug.WriteLine($"[ICON] Available embedded resources: {string.Join(", ", resources)}");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[ICON] Embedded resource load failed: {ex.Message}");
-            }
-
-            // If all else fails, return null (no icon will be shown)
-            System.Diagnostics.Debug.WriteLine($"[ICON] All attempts failed for: {iconSource}");
-            return null;
+                // Fallback for development - only if embedded resource not found
+                // This allows the test project to work during development
+                var imageName = iconSource.Replace(".svg", "").Replace(".png", "");
+                try
+                {
+#if WINDOWS
+                    // Windows needs the .png extension for MauiImage
+                    var windowsImageName = imageName + ".png";
+                    return ImageSource.FromFile(windowsImageName);
+#else
+                    // Android/iOS work with just the base name (no extension)
+                    return ImageSource.FromFile(imageName);
+#endif
+                }
+                catch
+                {
+                    return null;
+                }
+            });
         }
 
         /// <summary>

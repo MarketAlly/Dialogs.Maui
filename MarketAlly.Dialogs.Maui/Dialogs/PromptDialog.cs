@@ -303,29 +303,37 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         {
             var isDarkTheme = DialogService.CurrentTheme == DialogService.DarkTheme;
 
-            // Load eye icons from embedded resources (using PNG for reliability)
+            // Load eye icons from cache
             var iconName = isHidden
                 ? (isDarkTheme ? "eye_white.png" : "eye_black.png")
                 : (isDarkTheme ? "eye_off_white.png" : "eye_off_black.png");
 
-            var assembly = typeof(PromptDialog).Assembly;
+            var cacheKey = $"eye_{iconName}";
 
-            try
+            return Core.ImageCache.GetOrCreate(cacheKey, () =>
             {
-                var stream = assembly.GetManifestResourceStream(iconName);
-                if (stream != null)
-                {
-                    var memoryStream = new MemoryStream();
-                    stream.CopyTo(memoryStream);
-                    memoryStream.Position = 0;
-                    stream.Dispose();
-                    return ImageSource.FromStream(() => memoryStream);
-                }
-            }
-            catch { }
+                // ALWAYS use embedded resource first for NuGet consumers
+                var resourceName = $"MarketAlly.Dialogs.Maui.Resources.Images.{iconName}";
 
-            // Fallback to file loading
-            return ImageSource.FromFile(iconName);
+                if (Core.ImageCache.ResourceExists(resourceName))
+                {
+                    var buffer = Core.ImageCache.GetResourceBytes(resourceName);
+                    if (buffer != null)
+                    {
+                        return ImageSource.FromStream(() => new MemoryStream(buffer));
+                    }
+                }
+
+                // Fallback for development only
+                try
+                {
+                    return ImageSource.FromFile(iconName);
+                }
+                catch
+                {
+                    return null;
+                }
+            }) ?? ImageSource.FromFile("");
         }
     }
 }

@@ -45,7 +45,7 @@ public static MauiApp CreateMauiApp()
     var builder = MauiApp.CreateBuilder();
     builder
         .UseMauiApp<App>()
-        .UseMopups() // Required for popup functionality
+        .ConfigureMopups() // Required for popup functionality
         .ConfigureFonts(fonts =>
         {
             fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

@@ -314,43 +314,39 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         {
             if (value is string iconSource && !string.IsNullOrEmpty(iconSource))
             {
-                // For development, try file-based loading first
-                var imageName = iconSource.Replace(".svg", "").Replace(".png", "");
+                // Use cache for performance
+                var cacheKey = $"actionlist_{iconSource}";
 
-                try
+                return Core.ImageCache.GetOrCreate(cacheKey, () =>
                 {
-#if WINDOWS
-                    // Windows needs the .png extension
-                    var fileSource = ImageSource.FromFile(imageName + ".png");
-#else
-                    // Android/iOS work with just the base name
-                    var fileSource = ImageSource.FromFile(imageName);
-#endif
-                    if (fileSource != null)
-                        return fileSource;
-                }
-                catch { }
-
-                // Try to load from embedded resources (for NuGet package)
-                try
-                {
-                    var assembly = typeof(ActionListDialog).Assembly;
+                    // ALWAYS use embedded resources first for NuGet consumers
                     var pngFileName = System.IO.Path.GetFileName(iconSource);
-
-                    // EmbeddedResource uses the folder structure as namespace
                     var resourceName = $"MarketAlly.Dialogs.Maui.Resources.Images.{pngFileName}";
-                    var stream = assembly.GetManifestResourceStream(resourceName);
 
-                    if (stream != null)
+                    if (Core.ImageCache.ResourceExists(resourceName))
                     {
-                        var memoryStream = new System.IO.MemoryStream();
-                        stream.CopyTo(memoryStream);
-                        memoryStream.Position = 0;
-                        stream.Dispose();
-                        return ImageSource.FromStream(() => memoryStream);
+                        var buffer = Core.ImageCache.GetResourceBytes(resourceName);
+                        if (buffer != null)
+                        {
+                            return ImageSource.FromStream(() => new System.IO.MemoryStream(buffer));
+                        }
                     }
-                }
-                catch { }
+
+                    // Fallback for development only
+                    var imageName = iconSource.Replace(".svg", "").Replace(".png", "");
+                    try
+                    {
+#if WINDOWS
+                        return ImageSource.FromFile(imageName + ".png");
+#else
+                        return ImageSource.FromFile(imageName);
+#endif
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                });
             }
 
             return null;
