@@ -335,9 +335,12 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 try
                 {
                     var assembly = typeof(ActionListDialog).Assembly;
-                    var resourceName = System.IO.Path.GetFileName(iconSource);
+                    var pngFileName = System.IO.Path.GetFileName(iconSource);
 
+                    // EmbeddedResource uses the folder structure as namespace
+                    var resourceName = $"MarketAlly.Dialogs.Maui.Resources.Images.{pngFileName}";
                     var stream = assembly.GetManifestResourceStream(resourceName);
+
                     if (stream != null)
                     {
                         var memoryStream = new System.IO.MemoryStream();

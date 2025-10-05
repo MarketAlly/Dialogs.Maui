@@ -145,20 +145,26 @@ namespace MarketAlly.Dialogs.Maui.Core
             try
             {
                 var assembly = typeof(BaseDialog).Assembly;
-                var resourceName = System.IO.Path.GetFileName(iconSource);
+                var pngFileName = System.IO.Path.GetFileName(iconSource);
 
+                // EmbeddedResource uses the folder structure as namespace
+                var resourceName = $"MarketAlly.Dialogs.Maui.Resources.Images.{pngFileName}";
                 System.Diagnostics.Debug.WriteLine($"[ICON] Trying embedded resource: {resourceName}");
-
                 var stream = assembly.GetManifestResourceStream(resourceName);
+
                 if (stream != null)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[ICON] Success loading embedded resource: {resourceName}");
+                    System.Diagnostics.Debug.WriteLine($"[ICON] Success loading embedded resource");
                     var memoryStream = new System.IO.MemoryStream();
                     stream.CopyTo(memoryStream);
                     memoryStream.Position = 0;
                     stream.Dispose();
                     return ImageSource.FromStream(() => memoryStream);
                 }
+
+                // Debug: List all available embedded resources
+                var resources = assembly.GetManifestResourceNames();
+                System.Diagnostics.Debug.WriteLine($"[ICON] Available embedded resources: {string.Join(", ", resources)}");
             }
             catch (Exception ex)
             {
