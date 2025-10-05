@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Test.Pages.DialogDemoPage"
+             Title="Dialog Demos">
+
+    <ScrollView Padding="20">
+        <VerticalStackLayout Spacing="15">
+
+            <Label Text="MarketAlly Dialog Demos"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,20"/>
+
+            <!-- Alert Dialogs -->
+            <Label Text="Alert Dialogs"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,10,0,5"/>
+
+            <Button Text="Show Success Alert"
+                    Clicked="OnSuccessAlertClicked"
+                    BackgroundColor="Green"
+                    TextColor="White"/>
+
+            <Button Text="Show Error Alert"
+                    Clicked="OnErrorAlertClicked"
+                    BackgroundColor="Red"
+                    TextColor="White"/>
+
+            <Button Text="Show Warning Alert"
+                    Clicked="OnWarningAlertClicked"
+                    BackgroundColor="Orange"
+                    TextColor="White"/>
+
+            <Button Text="Show Info Alert"
+                    Clicked="OnInfoAlertClicked"
+                    BackgroundColor="Blue"
+                    TextColor="White"/>
+
+            <!-- Confirmation Dialogs -->
+            <Label Text="Confirmation Dialogs"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Show Yes/No Confirmation"
+                    Clicked="OnYesNoConfirmationClicked"
+                    BackgroundColor="Purple"
+                    TextColor="White"/>
+
+            <Button Text="Show Delete Confirmation"
+                    Clicked="OnDeleteConfirmationClicked"
+                    BackgroundColor="DarkRed"
+                    TextColor="White"/>
+
+            <!-- Prompt Dialogs -->
+            <Label Text="Prompt Dialogs"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Show Text Input Prompt"
+                    Clicked="OnTextPromptClicked"
+                    BackgroundColor="Teal"
+                    TextColor="White"/>
+
+            <Button Text="Show Password Prompt"
+                    Clicked="OnPasswordPromptClicked"
+                    BackgroundColor="DarkBlue"
+                    TextColor="White"/>
+
+            <!-- Editor Dialogs -->
+            <Label Text="Multi-line Editor Dialogs"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Show Notes Editor"
+                    Clicked="OnNotesEditorClicked"
+                    BackgroundColor="DarkGreen"
+                    TextColor="White"/>
+
+            <Button Text="Show Feedback Editor"
+                    Clicked="OnFeedbackEditorClicked"
+                    BackgroundColor="SeaGreen"
+                    TextColor="White"/>
+
+            <!-- Action List Dialog -->
+            <Label Text="Action List Dialog"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Show Action List"
+                    Clicked="OnActionListClicked"
+                    BackgroundColor="SlateBlue"
+                    TextColor="White"/>
+
+            <Button Text="Show Action List with Icons"
+                    Clicked="OnActionListWithIconsClicked"
+                    BackgroundColor="RoyalBlue"
+                    TextColor="White"/>
+
+            <!-- Color Picker Dialog -->
+            <Label Text="Color Picker Dialog"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Show Basic Color Picker"
+                    Clicked="OnColorPickerClicked"
+                    BackgroundColor="HotPink"
+                    TextColor="White"/>
+
+            <Button Text="Show Color Picker with Alpha"
+                    Clicked="OnColorPickerWithAlphaClicked"
+                    BackgroundColor="MediumPurple"
+                    TextColor="White"/>
+
+            <Button Text="Show Color Picker (No Presets)"
+                    Clicked="OnColorPickerNoPresetsClicked"
+                    BackgroundColor="CornflowerBlue"
+                    TextColor="White"/>
+
+            <!-- Loading Dialog -->
+            <Label Text="Loading Dialog"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Show Loading (3 seconds)"
+                    Clicked="OnLoadingClicked"
+                    BackgroundColor="Gray"
+                    TextColor="White"/>
+
+            <Button Text="Show Loading with Cancel"
+                    Clicked="OnLoadingWithCancelClicked"
+                    BackgroundColor="DarkGray"
+                    TextColor="White"/>
+
+            <!-- Theme Testing -->
+            <Label Text="Theme Testing"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Toggle Theme"
+                    Clicked="OnToggleThemeClicked"
+                    BackgroundColor="Indigo"
+                    TextColor="White"/>
+
+            <Label x:Name="CurrentThemeLabel"
+                   Text="Current Theme: Light"
+                   HorizontalOptions="Center"
+                   Margin="0,5,0,0"/>
+
+            <!-- Custom Dialog -->
+            <Label Text="Custom Dialog"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Show Custom Dialog"
+                    Clicked="OnCustomDialogClicked"
+                    BackgroundColor="Magenta"
+                    TextColor="White"/>
+
+            <!-- Long Text Testing -->
+            <Label Text="Long Text Testing"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Alert with Long Title"
+                    Clicked="OnLongTitleAlertClicked"
+                    BackgroundColor="Brown"
+                    TextColor="White"/>
+
+            <Button Text="Alert with Long Description"
+                    Clicked="OnLongDescriptionAlertClicked"
+                    BackgroundColor="Olive"
+                    TextColor="White"/>
+
+            <!-- Result Display -->
+            <Border BackgroundColor="LightGray"
+                   Padding="10"
+                   Margin="0,20,0,0"
+                   StrokeShape="RoundRectangle 5">
+                <VerticalStackLayout>
+                    <Label Text="Last Result:" FontAttributes="Bold"/>
+                    <Label x:Name="ResultLabel"
+                           Text="No action performed yet"
+                           LineBreakMode="WordWrap"/>
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
