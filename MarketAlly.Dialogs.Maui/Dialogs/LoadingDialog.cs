@@ -216,8 +216,10 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
 
         private void OnCancelClicked(object? sender, EventArgs e)
         {
+            if (_cancelButton != null)
+                _cancelButton.IsEnabled = false;
             _cancellationTokenSource?.Cancel();
-            MopupService.Instance.PopAsync();
+            MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
         }
 
         public void Dispose()
@@ -234,7 +236,7 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 {
                     try
                     {
-                        MopupService.Instance.PopAsync();
+                        MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
                     }
                     catch
                     {

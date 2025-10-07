@@ -255,8 +255,11 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         protected override bool HandleBackButton()
         {
             // Back button acts as cancel
+            _okButton.IsEnabled = false;
+            _cancelButton.IsEnabled = false;
+            _inputEntry.IsEnabled = false;
+            MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
             _taskCompletionSource.TrySetResult(null);
-            MopupService.Instance.PopAsync();
             return true;
         }
 
@@ -277,14 +280,20 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
 
         private async void OnOkClicked(object? sender, EventArgs e)
         {
+            _okButton.IsEnabled = false;
+            _cancelButton.IsEnabled = false;
+            _inputEntry.IsEnabled = false;
+            await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
             _taskCompletionSource.TrySetResult(_inputEntry.Text ?? string.Empty);
-            await MopupService.Instance.PopAsync();
         }
 
         private async void OnCancelClicked(object? sender, EventArgs e)
         {
+            _okButton.IsEnabled = false;
+            _cancelButton.IsEnabled = false;
+            _inputEntry.IsEnabled = false;
+            await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
             _taskCompletionSource.TrySetResult(null);
-            await MopupService.Instance.PopAsync();
         }
 
         private void OnTogglePasswordVisibility(object? sender, EventArgs e)

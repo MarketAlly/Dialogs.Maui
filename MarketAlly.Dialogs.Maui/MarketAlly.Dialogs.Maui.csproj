@@ -30,7 +30,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>MarketAlly.Dialogs.Maui</PackageId>
     <Title>MarketAlly Dialogs for .NET MAUI</Title>
-    <Version>1.0.6</Version>
+    <Version>1.1.0</Version>
     <Authors>David H Friedel Jr</Authors>
     <Company>MarketAlly</Company>
     <Description>A comprehensive, production-ready dialog library for .NET MAUI applications featuring 7 dialog types (Alert, Confirm, Prompt, Editor, Loading, ActionList, ColorPicker), built-in theming with dark/light mode support, internationalization (English, Spanish, French, German), custom icons, and extensive customization options. Supports iOS, Android, Windows, and macOS.</Description>
@@ -43,15 +43,34 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
-Initial release v1.0.0:
+Version 1.1.0 - Enhanced Action List Dialog &amp; Improved UX:
+
+NEW FEATURES:
+• Multi-line Description Support: ActionListDialog now supports 2, 3, or more lines for item descriptions
+• Configurable Line Break Modes: Choose between TailTruncation, WordWrap, CharacterWrap, HeadTruncation, and MiddleTruncation
+• Dynamic Description Updates: Change DescriptionMaxLines and DescriptionLineBreakMode properties after dialog creation
+• Intelligent Scrolling: Automatically shows scrollbar when content exceeds dialog height based on line settings
+
+IMPROVEMENTS:
+• Fixed Dialog Height: ActionListDialog now maintains consistent height with scrollable content area
+• Instant Dismissal: All dialogs now respect DialogTheme.EnableAnimation setting for instant or animated dismissal
+• Better UX: Controls are disabled immediately on interaction to prevent double-taps and accidental multiple selections
+• Optimized Layout: Switched to Grid-based layout for better text wrapping and performance
+
+BUG FIXES:
+• Fixed cancel button being cut off at bottom of ActionListDialog
+• Fixed scrollbar not appearing for multi-line descriptions
+• Fixed height calculation to account for variable description line counts
+
+BREAKING CHANGES:
+• None - fully backward compatible with v1.0.0
+
+Previous release v1.0.0:
 • 7 dialog types: Alert, Confirm, Prompt, Editor, Loading, ActionList, ColorPicker
 • Built-in dark/light theme support with automatic detection
 • Internationalization support (English, Spanish, French, German)
 • Custom icon support with platform-specific optimizations
-• Password visibility toggle for prompt dialogs
-• Customizable description padding
 • Cross-platform support (iOS, Android, Windows, macOS)
-• Full .NET 9 compatibility
     </PackageReleaseNotes>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <IncludeSymbols>true</IncludeSymbols>
@@ -84,9 +103,6 @@ Initial release v1.0.0:
     <!-- For NuGet: Embed PNGs as resources that will work from the package -->
     <!-- Use full namespace path for embedded resources -->
     <EmbeddedResource Include="Resources\Images\*.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Themes\" />
   </ItemGroup>
 
 </Project>

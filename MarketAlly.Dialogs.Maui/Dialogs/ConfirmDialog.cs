@@ -180,8 +180,10 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         protected override bool HandleBackButton()
         {
             // Back button acts as cancel
+            _confirmButton.IsEnabled = false;
+            _cancelButton.IsEnabled = false;
+            MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
             _taskCompletionSource.TrySetResult(false);
-            MopupService.Instance.PopAsync();
             return true;
         }
 
@@ -198,14 +200,18 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
 
         private async void OnConfirmClicked(object? sender, EventArgs e)
         {
+            _confirmButton.IsEnabled = false;
+            _cancelButton.IsEnabled = false;
+            await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
             _taskCompletionSource.TrySetResult(true);
-            await MopupService.Instance.PopAsync();
         }
 
         private async void OnCancelClicked(object? sender, EventArgs e)
         {
+            _confirmButton.IsEnabled = false;
+            _cancelButton.IsEnabled = false;
+            await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
             _taskCompletionSource.TrySetResult(false);
-            await MopupService.Instance.PopAsync();
         }
     }
 }

@@ -245,6 +245,288 @@ public partial class DialogDemoPage : ContentPage
         }
     }
 
+    private async void OnLargeActionListClicked(object sender, EventArgs e)
+    {
+        var actions = new List<ActionItem>
+        {
+            new ActionItem("Create New Project", "Initialize a new project workspace", 0, "task_alt_black_48dp", "task_alt_white_48dp"),
+            new ActionItem("Open Existing", "Open an existing project file", 1, "info_black_48dp", "info_white_48dp"),
+            new ActionItem("Save Current", "Save the current project", 2, "task_alt_black_48dp", "task_alt_white_48dp"),
+            new ActionItem("Save As...", "Save with a different name or location", 3, "info_black_48dp", "info_white_48dp"),
+            new ActionItem("Export to PDF", "Export the project as a PDF document", 4, "info_black_48dp", "info_white_48dp"),
+            new ActionItem("Share Online", "Share the project via cloud services", 5, "task_alt_black_48dp", "task_alt_white_48dp"),
+            new ActionItem("Print Preview", "Preview before printing", 6, "info_black_48dp", "info_white_48dp"),
+            new ActionItem("Settings", "Configure project settings and preferences", 7, "help_outline_black_48dp", "help_outline_white_48dp"),
+            new ActionItem("Delete Project", "Permanently remove this project", 8, "error_outline_black_48dp", "error_outline_white_48dp"),
+            new ActionItem("Help & Support", "View documentation and get help", 9, "help_outline_black_48dp", "help_outline_white_48dp")
+        };
+
+        var dialog = new ActionListDialog(
+            "Project Actions",
+            actions,
+            "Cancel");
+
+        var result = await dialog.ShowAsync();
+
+        if (result >= 0 && result < actions.Count)
+        {
+            ResultLabel.Text = $"Selected: {actions[result].Name} - {actions[result].Detail}";
+        }
+        else
+        {
+            ResultLabel.Text = "Large action list cancelled";
+        }
+    }
+
+    private async void OnMultiLineActionListClicked(object sender, EventArgs e)
+    {
+        var actions = new List<ActionItem>
+        {
+            new ActionItem("Cloud Sync", "Automatically sync your files across all devices in real-time. Changes are instantly reflected everywhere you work.", 0, "task_alt_black_48dp", "task_alt_white_48dp"),
+            new ActionItem("Team Collaboration", "Invite team members to collaborate on projects. Share workspaces, assign tasks, and track progress together.", 1, "help_outline_black_48dp", "help_outline_white_48dp"),
+            new ActionItem("Advanced Security", "Enable two-factor authentication, encrypted backups, and secure sharing with granular permission controls.", 2, "warning_amber_black_48dp", "warning_amber_white_48dp"),
+            new ActionItem("Version History", "Access complete revision history for all your files. Restore previous versions or compare changes side-by-side.", 3, "info_black_48dp", "info_white_48dp"),
+            new ActionItem("Smart Notifications", "Receive intelligent alerts about important updates, deadlines, and team activities that matter to you.", 4, "info_black_48dp", "info_white_48dp")
+        };
+
+        var dialog = new ActionListDialog(
+            "Premium Features",
+            actions,
+            "Cancel",
+            customHeight: null,
+            descriptionMaxLines: 2,
+            descriptionLineBreakMode: LineBreakMode.TailTruncation);
+
+        var result = await dialog.ShowAsync();
+
+        if (result >= 0 && result < actions.Count)
+        {
+            ResultLabel.Text = $"Selected premium feature: {actions[result].Name}";
+        }
+        else
+        {
+            ResultLabel.Text = "Multi-line action list cancelled";
+        }
+    }
+
+    private async void OnDescriptionVariationsClicked(object sender, EventArgs e)
+    {
+        // First, let the user choose which variation to test
+        var variationOptions = new List<ActionItem>
+        {
+            new ActionItem("Single Line (Truncated)", "Default behavior - long text gets truncated Invite team members to collaborate on projects. Share workspaces, assign tasks, and track progress together.", 0, "info_black_48dp", "info_white_48dp"),
+            new ActionItem("2 Lines (Word Wrap)", "Text wraps to 2 lines maximum Invite team members to collaborate on projects. Share workspaces, assign tasks, and track progress together.", 1, "info_black_48dp", "info_white_48dp"),
+            new ActionItem("3 Lines (Word Wrap)", "Text wraps to 3 lines maximum Invite team members to collaborate on projects. Share workspaces, assign tasks, and track progress together.", 2, "info_black_48dp", "info_white_48dp"),
+            new ActionItem("Tail Truncation", "Truncates at end with ellipsis Invite team members to collaborate on projects. Share workspaces, assign tasks, and track progress together.", 3, "info_black_48dp", "info_white_48dp"),
+            new ActionItem("Head Truncation", "Truncates at beginning with ellipsis Invite team members to collaborate on projects. Share workspaces, assign tasks, and track progress together.", 4, "info_black_48dp", "info_white_48dp"),
+            new ActionItem("Middle Truncation", "Truncates in the middle with ellipsis Invite team members to collaborate on projects. Share workspaces, assign tasks, and track progress together.", 5, "info_black_48dp", "info_white_48dp")
+        };
+
+        var variationDialog = new ActionListDialog(
+            "Choose Description Style",
+            variationOptions,
+            "Cancel");
+
+        var variationChoice = await variationDialog.ShowAsync();
+
+        if (variationChoice == -1)
+        {
+            ResultLabel.Text = "Description variations demo cancelled";
+            return;
+        }
+
+        // Now show the example with the chosen variation
+        var exampleActions = new List<ActionItem>
+        {
+            new ActionItem("Advanced AI Processing", "Our cutting-edge artificial intelligence algorithms analyze your data in real-time to provide intelligent insights, predictions, and automated recommendations that help you make better decisions faster.", 0, "task_alt_black_48dp", "task_alt_white_48dp"),
+            new ActionItem("Enterprise Cloud Storage", "Store unlimited files with military-grade encryption, automatic versioning, instant synchronization across all devices, and seamless collaboration tools for teams of any size.", 1, "info_black_48dp", "info_white_48dp"),
+            new ActionItem("Real-Time Analytics Dashboard", "Monitor your business metrics with interactive charts, customizable widgets, live data updates, and comprehensive reporting tools that provide actionable insights at a glance.", 2, "help_outline_black_48dp", "help_outline_white_48dp"),
+            new ActionItem("Automated Workflow Engine", "Design and deploy complex business workflows with our intuitive drag-and-drop interface, conditional logic, integrations with hundreds of third-party services, and powerful automation capabilities.", 3, "task_alt_black_48dp", "task_alt_white_48dp"),
+            new ActionItem("24/7 Premium Support", "Get immediate assistance from our expert support team via live chat, email, or phone. Guaranteed response times, dedicated account managers, and comprehensive training resources included.", 4, "help_outline_black_48dp", "help_outline_white_48dp")
+        };
+
+        ActionListDialog exampleDialog;
+
+        switch (variationChoice)
+        {
+            case 0: // Single Line (Truncated)
+                exampleDialog = new ActionListDialog(
+                    "Single Line Truncation",
+                    exampleActions,
+                    "Cancel",
+                    customHeight: null,
+                    descriptionMaxLines: 1,
+                    descriptionLineBreakMode: LineBreakMode.TailTruncation);
+                ResultLabel.Text = "Showing: Single line with tail truncation (default)";
+                break;
+
+            case 1: // 2 Lines (Word Wrap)
+                exampleDialog = new ActionListDialog(
+                    "2 Lines Word Wrap",
+                    exampleActions,
+                    "Cancel",
+                    customHeight: null,
+                    descriptionMaxLines: 2,
+                    descriptionLineBreakMode: LineBreakMode.TailTruncation);
+                ResultLabel.Text = "Showing: 2 lines with tail truncation (wraps + ellipsis)";
+                break;
+
+            case 2: // 3 Lines (Word Wrap)
+                exampleDialog = new ActionListDialog(
+                    "3 Lines Word Wrap",
+                    exampleActions,
+                    "Cancel",
+                    customHeight: null,
+                    descriptionMaxLines: 3,
+                    descriptionLineBreakMode: LineBreakMode.TailTruncation);
+                ResultLabel.Text = "Showing: 3 lines with tail truncation (wraps + ellipsis)";
+                break;
+
+            case 3: // Tail Truncation
+                exampleDialog = new ActionListDialog(
+                    "Tail Truncation",
+                    exampleActions,
+                    "Cancel",
+                    customHeight: null,
+                    descriptionMaxLines: 1,
+                    descriptionLineBreakMode: LineBreakMode.TailTruncation);
+                ResultLabel.Text = "Showing: Tail truncation (ends with ...)";
+                break;
+
+            case 4: // Head Truncation
+                exampleDialog = new ActionListDialog(
+                    "Head Truncation",
+                    exampleActions,
+                    "Cancel",
+                    customHeight: null,
+                    descriptionMaxLines: 1,
+                    descriptionLineBreakMode: LineBreakMode.HeadTruncation);
+                ResultLabel.Text = "Showing: Head truncation (starts with ...)";
+                break;
+
+            case 5: // Middle Truncation
+                exampleDialog = new ActionListDialog(
+                    "Middle Truncation",
+                    exampleActions,
+                    "Cancel",
+                    customHeight: null,
+                    descriptionMaxLines: 1,
+                    descriptionLineBreakMode: LineBreakMode.MiddleTruncation);
+                ResultLabel.Text = "Showing: Middle truncation (... in middle)";
+                break;
+
+            default:
+                return;
+        }
+
+        var result = await exampleDialog.ShowAsync();
+
+        if (result >= 0 && result < exampleActions.Count)
+        {
+            ResultLabel.Text = $"Selected: {exampleActions[result].Name} (Variation: {variationOptions[variationChoice].Name})";
+        }
+        else
+        {
+            ResultLabel.Text = $"Cancelled after viewing: {variationOptions[variationChoice].Name}";
+        }
+    }
+
+    private async void OnChainedDialogsClicked(object sender, EventArgs e)
+    {
+        ResultLabel.Text = "Starting chained dialogs test...";
+
+        // Step 1: Show ActionList Dialog
+        var actions = new List<ActionItem>
+        {
+            new ActionItem("Create New Item", "Start a new creation process", 0, "task_alt_black_48dp", "task_alt_white_48dp"),
+            new ActionItem("Delete Item", "Remove an existing item", 1, "error_outline_black_48dp", "error_outline_white_48dp"),
+            new ActionItem("View Info", "Display information", 2, "info_black_48dp", "info_white_48dp")
+        };
+
+        var actionDialog = new ActionListDialog(
+            "Select an Action",
+            actions,
+            "Cancel");
+
+        var actionResult = await actionDialog.ShowAsync();
+
+        if (actionResult == -1)
+        {
+            ResultLabel.Text = "Chained dialog test cancelled at step 1 (ActionList)";
+            return;
+        }
+
+        var selectedAction = actions[actionResult].Name;
+        ResultLabel.Text = $"Step 1 complete: Selected '{selectedAction}'";
+
+        // Step 2: Show Confirmation Dialog based on selection
+        string confirmTitle = selectedAction switch
+        {
+            "Create New Item" => "Confirm Creation",
+            "Delete Item" => "Confirm Deletion",
+            "View Info" => "Confirm View",
+            _ => "Confirm Action"
+        };
+
+        string confirmMessage = selectedAction switch
+        {
+            "Create New Item" => "Are you sure you want to create a new item? This will initialize a new workspace.",
+            "Delete Item" => "Are you sure you want to delete this item? This action cannot be undone!",
+            "View Info" => "Would you like to view detailed information about this item?",
+            _ => "Do you want to proceed with this action?"
+        };
+
+        var confirmDialog = new ConfirmDialog(
+            confirmTitle,
+            confirmMessage,
+            "Yes, Proceed",
+            "No, Cancel",
+            selectedAction == "Delete Item" ? DialogType.Warning : DialogType.Help);
+
+        var confirmResult = await confirmDialog.ShowAsync();
+
+        if (!confirmResult)
+        {
+            ResultLabel.Text = $"Chained dialog test cancelled at step 2 (Confirmation for '{selectedAction}')";
+            return;
+        }
+
+        ResultLabel.Text = $"Step 2 complete: Confirmed '{selectedAction}'";
+
+        // Step 3: Show Alert Dialog with final result
+        string alertTitle = selectedAction switch
+        {
+            "Create New Item" => "Success!",
+            "Delete Item" => "Deleted",
+            "View Info" => "Information",
+            _ => "Complete"
+        };
+
+        string alertMessage = selectedAction switch
+        {
+            "Create New Item" => "Your new item has been created successfully and is ready to use!",
+            "Delete Item" => "The item has been permanently deleted from the system.",
+            "View Info" => "Detailed information: This is a sample item with various properties and metadata attached to it.",
+            _ => "The action has been completed successfully."
+        };
+
+        var alertType = selectedAction switch
+        {
+            "Create New Item" => DialogType.Success,
+            "Delete Item" => DialogType.Warning,
+            "View Info" => DialogType.Info,
+            _ => DialogType.None
+        };
+
+        await AlertDialog.ShowAsync(
+            alertTitle,
+            alertMessage,
+            "OK",
+            alertType);
+
+        ResultLabel.Text = $"Chained dialog test complete! Flow: ActionList → Confirm → Alert (Action: '{selectedAction}')";
+    }
+
     private async void OnColorPickerClicked(object sender, EventArgs e)
     {
         var dialog = new ColorPickerDialog(

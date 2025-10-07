@@ -103,6 +103,26 @@
                     BackgroundColor="RoyalBlue"
                     TextColor="White"/>
 
+            <Button Text="Test Chained Dialogs"
+                    Clicked="OnChainedDialogsClicked"
+                    BackgroundColor="DarkSlateBlue"
+                    TextColor="White"/>
+
+            <Button Text="Show 10 Item Action List"
+                    Clicked="OnLargeActionListClicked"
+                    BackgroundColor="MediumSlateBlue"
+                    TextColor="White"/>
+
+            <Button Text="Action List with Multi-line Descriptions"
+                    Clicked="OnMultiLineActionListClicked"
+                    BackgroundColor="MediumPurple"
+                    TextColor="White"/>
+
+            <Button Text="Description Variations Demo"
+                    Clicked="OnDescriptionVariationsClicked"
+                    BackgroundColor="DarkOrchid"
+                    TextColor="White"/>
+
             <!-- Color Picker Dialog -->
             <Label Text="Color Picker Dialog"
                    FontSize="18"

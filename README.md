@@ -219,9 +219,10 @@ await MopupService.Instance.RemovePageAsync(loading);
 ```
 
 ### Action List Dialog
-Present a list of actions with optional icons and descriptions.
+Present a list of actions with optional icons and descriptions. Supports multi-line descriptions with customizable truncation and wrapping behavior.
 
 ```csharp
+// Basic action list
 var actions = new List<ActionItem>
 {
     new ActionItem("Share", "Share with others", 0),
@@ -244,6 +245,37 @@ if (result >= 0)
     var selectedAction = actions[result];
     await HandleAction(selectedAction);
 }
+
+// With icons
+var actionsWithIcons = new List<ActionItem>
+{
+    new ActionItem("Share", "Share with others", 0,
+        "share_icon_dark.png", "share_icon_light.png"),
+    new ActionItem("Edit", "Modify the item", 1,
+        "edit_icon_dark.png", "edit_icon_light.png")
+};
+
+// Multi-line descriptions (NEW in v1.1.0)
+var premiumActions = new List<ActionItem>
+{
+    new ActionItem("Cloud Sync",
+        "Automatically sync your files across all devices in real-time. Changes are instantly reflected everywhere you work.",
+        0, "sync_icon_dark.png", "sync_icon_light.png"),
+    new ActionItem("Team Collaboration",
+        "Invite team members to collaborate on projects. Share workspaces, assign tasks, and track progress together.",
+        1, "team_icon_dark.png", "team_icon_light.png")
+};
+
+var multiLineDialog = new ActionListDialog(
+    "Premium Features",
+    premiumActions,
+    "Cancel",
+    customHeight: null,
+    descriptionMaxLines: 2,  // Wrap to 2 lines with ellipsis
+    descriptionLineBreakMode: LineBreakMode.TailTruncation
+);
+
+int selected = await multiLineDialog.ShowAsync();
 ```
 
 ### Color Picker Dialog
@@ -602,6 +634,36 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - Built with [.NET MAUI](https://github.com/dotnet/maui)
 - Popup functionality powered by [Mopups](https://github.com/LuckyDucko/Mopups)
 - Icons from Material Design
+
+## 🆕 What's New in v1.1.0
+
+### Enhanced Action List Dialog
+- **Multi-line Description Support**: Descriptions can now wrap to 2, 3, or more lines
+- **Configurable Line Break Modes**: Choose between tail truncation, word wrap, character wrap, head truncation, and middle truncation
+- **Intelligent Scrolling**: Automatically shows scrollbar when content exceeds dialog height
+- **Fixed Dialog Height**: Consistent dialog sizing with scrollable content area
+
+### Improved Dialog Dismissal
+- **Instant Dismissal**: Dialogs now respect the `EnableAnimation` theme setting
+- **Disable Animations**: Set `DialogTheme.EnableAnimation = false` for instant dialog dismissal
+- **Better UX**: Controls are disabled immediately on interaction to prevent double-taps
+
+### API Enhancements
+```csharp
+// Configure description behavior
+var dialog = new ActionListDialog(
+    title: "Select Option",
+    items: actions,
+    cancelText: "Cancel",
+    customHeight: null,
+    descriptionMaxLines: 2,  // NEW: Control line wrapping
+    descriptionLineBreakMode: LineBreakMode.TailTruncation  // NEW: Control truncation
+);
+
+// Dynamic updates
+dialog.DescriptionMaxLines = 3;  // NEW: Change after creation
+dialog.DescriptionLineBreakMode = LineBreakMode.WordWrap;  // NEW: Update behavior
+```
 
 ## 📈 Roadmap
 

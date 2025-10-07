@@ -19,33 +19,65 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         private readonly Button _cancelButton;
         private readonly Border _containerFrame;
         private readonly ObservableCollection<ActionItem> _items;
+        private int _descriptionMaxLines = 1;
+        private LineBreakMode _descriptionLineBreakMode = LineBreakMode.TailTruncation;
+
+        /// <summary>
+        /// Gets or sets the maximum number of lines for item descriptions
+        /// </summary>
+        public int DescriptionMaxLines
+        {
+            get => _descriptionMaxLines;
+            set
+            {
+                _descriptionMaxLines = value;
+                RefreshListView();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the line break mode for item descriptions
+        /// </summary>
+        public LineBreakMode DescriptionLineBreakMode
+        {
+            get => _descriptionLineBreakMode;
+            set
+            {
+                _descriptionLineBreakMode = value;
+                RefreshListView();
+            }
+        }
 
         public ActionListDialog(
             string title,
             List<ActionItem> items,
             string? cancelText = null,
-            double? customHeight = null)
+            double? customHeight = null,
+            int descriptionMaxLines = 1,
+            LineBreakMode descriptionLineBreakMode = LineBreakMode.TailTruncation)
         {
             DialogType = DialogType.None;
             _items = new ObservableCollection<ActionItem>(items);
+            _descriptionMaxLines = descriptionMaxLines;
+            _descriptionLineBreakMode = descriptionLineBreakMode;
 
             // Create UI elements
             _titleLabel = CreateTitleLabel(title);
 
-            _listView = new ListView
+            _listView = new ListView(ListViewCachingStrategy.RetainElement)
             {
                 ItemsSource = _items,
                 SeparatorVisibility = SeparatorVisibility.Default,
                 SeparatorColor = CurrentTheme.BorderColor.WithAlpha(0.3f),
-                HasUnevenRows = false,
-                RowHeight = 50,
+                HasUnevenRows = true,
                 SelectionMode = ListViewSelectionMode.Single,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
-                VerticalScrollBarVisibility = items.Count > 6 ? ScrollBarVisibility.Always : ScrollBarVisibility.Never,
+                VerticalScrollBarVisibility = ShouldShowScrollBar(items.Count) ? ScrollBarVisibility.Always : ScrollBarVisibility.Never,
                 BackgroundColor = Colors.Transparent,
                 ItemTemplate = CreateItemTemplate(),
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                MinimumHeightRequest = 100
+                VerticalOptions = LayoutOptions.Fill,
+                HeightRequest = 200, // Fixed height for scrolling
+                MinimumHeightRequest = 200
             };
 
             _listView.ItemSelected += OnItemSelected;
@@ -121,10 +153,22 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         {
             return new DataTemplate(() =>
             {
-                var horizontalStack = new HorizontalStackLayout
+                // Use Grid for better control over layout and text wrapping
+                var grid = new Grid
                 {
                     Padding = new Thickness(15, 10),
-                    Spacing = 10
+                    ColumnSpacing = 10,
+                    RowSpacing = 2,
+                    ColumnDefinitions =
+                    {
+                        new ColumnDefinition(GridLength.Auto),  // Icon column (fixed)
+                        new ColumnDefinition(GridLength.Star)   // Text column (fills space)
+                    },
+                    RowDefinitions =
+                    {
+                        new RowDefinition(GridLength.Auto),  // Title row
+                        new RowDefinition(GridLength.Auto)   // Detail row
+                    }
                 };
 
                 // Icon
@@ -133,7 +177,8 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                     WidthRequest = 24,
                     HeightRequest = 24,
                     Aspect = Aspect.AspectFit,
-                    VerticalOptions = LayoutOptions.Center
+                    VerticalOptions = LayoutOptions.Start,
+                    Margin = new Thickness(0, 2, 0, 0) // Align with text baseline
                 };
                 icon.SetBinding(Image.IsVisibleProperty, nameof(ActionItem.ShowImage));
 
@@ -149,57 +194,83 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 };
                 icon.SetBinding(Image.SourceProperty, binding);
 
-                // Text content stack
-                var textStack = new VerticalStackLayout
-                {
-                    Spacing = 2,
-                    VerticalOptions = LayoutOptions.Center
-                };
+                // Add icon spanning both rows
+                grid.Add(icon, 0, 0);
+                Grid.SetRowSpan(icon, 2);
 
                 // Title
                 var titleLabel = new Label
                 {
                     FontSize = 14,
                     TextColor = CurrentTheme.TitleTextColor,
-                    VerticalOptions = LayoutOptions.Start
+                    VerticalOptions = LayoutOptions.Start,
+                    LineBreakMode = LineBreakMode.TailTruncation,
+                    MaxLines = 1
                 };
                 titleLabel.SetBinding(Label.TextProperty, nameof(ActionItem.Name));
+                grid.Add(titleLabel, 1, 0);
 
                 // Detail
                 var detailLabel = new Label
                 {
                     FontSize = 12,
                     TextColor = CurrentTheme.DescriptionTextColor.WithAlpha(0.7f),
-                    VerticalOptions = LayoutOptions.Start
+                    VerticalOptions = LayoutOptions.Start,
+                    MaxLines = _descriptionMaxLines,
+                    LineBreakMode = _descriptionLineBreakMode
                 };
                 detailLabel.SetBinding(Label.TextProperty, nameof(ActionItem.Detail));
                 detailLabel.SetBinding(Label.IsVisibleProperty, nameof(ActionItem.HasDetail));
+                grid.Add(detailLabel, 1, 1);
 
-                textStack.Children.Add(titleLabel);
-                textStack.Children.Add(detailLabel);
+                var viewCell = new ViewCell
+                {
+                    View = grid
+                };
 
-                horizontalStack.Children.Add(icon);
-                horizontalStack.Children.Add(textStack);
-
-                return new ViewCell { View = horizontalStack };
+                return viewCell;
             });
+        }
+
+        private bool ShouldShowScrollBar(int itemCount)
+        {
+            // Calculate if content will exceed fixed list height
+            const double fixedListHeight = 200;
+            const double titleLineHeight = 20;
+            const double descriptionLineHeight = 18;
+            const double itemPadding = 20;
+
+            // Estimate item height based on description lines
+            double estimatedItemHeight = titleLineHeight + (_descriptionMaxLines * descriptionLineHeight) + itemPadding;
+            double estimatedTotalHeight = estimatedItemHeight * itemCount;
+
+            return estimatedTotalHeight > fixedListHeight;
         }
 
         private double CalculateDialogHeight(int itemCount)
         {
-            const double itemHeight = 50;       // Match ListView RowHeight
-            const double titleHeight = 50;      // Title with padding
-            const double buttonHeight = 50;     // Button with padding
-            const double separatorHeight = 10;  // Two separators
+            // Base heights - fixed components
+            const double titleHeight = 50;      // Title with padding and margins (10 top + 10 bottom)
+            const double buttonHeight = 44;     // Button height from theme
+            const double buttonMargin = 10;     // Button margin (5 top + 5 bottom)
+            const double separatorHeight = 10;  // Two separators (1px each + margins)
             const double itemCountHeight = 25;  // Item count label if shown
-            const double padding = 20;          // Top and bottom padding
-            const int maxVisibleItems = 6;      // Show up to 6 items before scrolling
+            const double gridPadding = 20;      // Grid padding (10 top + 10 bottom)
+            const double rowSpacing = 25;       // Grid row spacing (5 rows * 5px)
 
-            int visibleItems = Math.Min(itemCount, maxVisibleItems);
-            double listHeight = itemHeight * visibleItems;
+            // Fixed list height - items beyond this will scroll
+            // Using a reasonable fixed height that shows approximately 4-5 single-line items
+            // or 2-3 multi-line items depending on descriptionMaxLines
+            const double fixedListHeight = 200;
 
-            // Calculate total height
-            double totalHeight = titleHeight + buttonHeight + separatorHeight + padding + listHeight;
+            // Calculate total height with fixed list height
+            double totalHeight = titleHeight +
+                                buttonHeight +
+                                buttonMargin +
+                                separatorHeight +
+                                gridPadding +
+                                rowSpacing +
+                                fixedListHeight;
 
             // Add item count label height if showing
             if (itemCount > 6)
@@ -217,13 +288,15 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             string title,
             List<ActionItem> items,
             string? cancelText = null,
-            double? customHeight = null)
+            double? customHeight = null,
+            int descriptionMaxLines = 1,
+            LineBreakMode descriptionLineBreakMode = LineBreakMode.TailTruncation)
         {
             // Check if an action list is already showing
             if (MopupService.Instance.PopupStack.Any(p => p is ActionListDialog))
                 return -1;
 
-            var dialog = new ActionListDialog(title, items, cancelText, customHeight);
+            var dialog = new ActionListDialog(title, items, cancelText, customHeight, descriptionMaxLines, descriptionLineBreakMode);
             await MopupService.Instance.PushAsync(dialog);
             return await dialog._taskCompletionSource.Task;
         }
@@ -260,18 +333,44 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 _items.Add(item);
             }
 
-            // Recalculate height
+            // Recalculate height and scrollbar
             _containerFrame.HeightRequest = CalculateDialogHeight(items.Count);
-            _listView.VerticalScrollBarVisibility = items.Count > 6
-                ? ScrollBarVisibility.Default
+            _listView.VerticalScrollBarVisibility = ShouldShowScrollBar(items.Count)
+                ? ScrollBarVisibility.Always
+                : ScrollBarVisibility.Never;
+        }
+
+        /// <summary>
+        /// Refreshes the ListView to apply changes to description styling
+        /// </summary>
+        private void RefreshListView()
+        {
+            // Force ListView to recreate all cells with new template
+            _listView.ItemTemplate = CreateItemTemplate();
+            _listView.HasUnevenRows = false;
+            _listView.HasUnevenRows = true;
+
+            var currentItems = _items.ToList();
+            _items.Clear();
+            foreach (var item in currentItems)
+            {
+                _items.Add(item);
+            }
+
+            // Recalculate dialog height and scrollbar based on new line settings
+            _containerFrame.HeightRequest = CalculateDialogHeight(currentItems.Count);
+            _listView.VerticalScrollBarVisibility = ShouldShowScrollBar(currentItems.Count)
+                ? ScrollBarVisibility.Always
                 : ScrollBarVisibility.Never;
         }
 
         protected override bool HandleBackButton()
         {
             // Back button acts as cancel
+            _listView.IsEnabled = false;
+            _cancelButton.IsEnabled = false;
+            MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
             _taskCompletionSource.TrySetResult(-1);
-            MopupService.Instance.PopAsync();
             return true;
         }
 
@@ -292,16 +391,26 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         {
             if (e.SelectedItem is ActionItem item)
             {
+                // Prevent further interaction
+                _listView.IsEnabled = false;
+                _cancelButton.IsEnabled = false;
                 _listView.SelectedItem = null;
+
+                // Dismiss with or without animation based on theme setting
+                await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
                 _taskCompletionSource.TrySetResult(item.Value);
-                await MopupService.Instance.PopAsync();
             }
         }
 
         private async void OnCancelClicked(object? sender, EventArgs e)
         {
+            // Prevent further interaction
+            _listView.IsEnabled = false;
+            _cancelButton.IsEnabled = false;
+
+            // Dismiss with or without animation based on theme setting
+            await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
             _taskCompletionSource.TrySetResult(-1);
-            await MopupService.Instance.PopAsync();
         }
     }
 

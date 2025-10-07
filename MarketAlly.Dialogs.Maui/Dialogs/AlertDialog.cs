@@ -157,8 +157,9 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
 
         private async void OnOkClicked(object? sender, EventArgs e)
         {
+            _okButton.IsEnabled = false;
+            await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
             _taskCompletionSource.TrySetResult(true);
-            await MopupService.Instance.PopAsync();
         }
     }
 }
