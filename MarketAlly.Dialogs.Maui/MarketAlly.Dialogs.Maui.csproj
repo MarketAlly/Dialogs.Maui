@@ -30,7 +30,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>MarketAlly.Dialogs.Maui</PackageId>
     <Title>MarketAlly Dialogs for .NET MAUI</Title>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
     <Authors>David H Friedel Jr</Authors>
     <Company>MarketAlly</Company>
     <Description>A comprehensive, production-ready dialog library for .NET MAUI applications featuring 7 dialog types (Alert, Confirm, Prompt, Editor, Loading, ActionList, ColorPicker), built-in theming with dark/light mode support, internationalization (English, Spanish, French, German), custom icons, and extensive customization options. Supports iOS, Android, Windows, and macOS.</Description>
@@ -43,6 +43,26 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+Version 1.3.0 - Hierarchical Menus &amp; Critical Bug Fix:
+
+NEW FEATURES:
+• Hierarchical Action List Support: ActionItem.SubItems property enables multi-level menu navigation
+• Seamless Navigation: Navigate through menu hierarchies within a single dialog instance
+• Automatic Back Navigation: Cancel/Back button automatically handles submenu navigation
+• Unlimited Nesting: Support for any depth of menu hierarchies
+
+BUG FIXES:
+• CRITICAL: Fixed "duplicate key" exception when showing dialogs immediately after ActionListDialog dismissal
+• Fixed race condition where PopAsync wasn't awaited before returning result
+• Ensures ActionListDialog is fully removed from Mopups stack before caller continues
+
+IMPROVEMENTS:
+• Better async handling in dialog dismissal for smoother transitions
+• Improved reliability when chaining multiple dialogs
+
+BREAKING CHANGES:
+• None - fully backward compatible with v1.2.0
+
 Version 1.2.0 - Title &amp; Description Customization:
 
 NEW FEATURES:

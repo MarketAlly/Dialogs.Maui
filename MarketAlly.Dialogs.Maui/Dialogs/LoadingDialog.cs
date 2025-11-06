@@ -214,12 +214,12 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             _activityIndicator.Color = theme.ButtonBackgroundColor;
         }
 
-        private void OnCancelClicked(object? sender, EventArgs e)
+        private async void OnCancelClicked(object? sender, EventArgs e)
         {
             if (_cancelButton != null)
                 _cancelButton.IsEnabled = false;
             _cancellationTokenSource?.Cancel();
-            MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
+            await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
         }
 
         public void Dispose()
@@ -234,16 +234,21 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             {
                 if (disposing)
                 {
-                    try
-                    {
-                        MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
-                    }
-                    catch
-                    {
-                        // Ignore errors during disposal
-                    }
+                    DisposeAsyncHelper();
                 }
                 _isDisposed = true;
+            }
+        }
+
+        private async void DisposeAsyncHelper()
+        {
+            try
+            {
+                await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
+            }
+            catch
+            {
+                // Ignore errors during disposal
             }
         }
 

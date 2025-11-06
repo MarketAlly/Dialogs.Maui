@@ -417,7 +417,7 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             }
         }
 
-        private void OnItemSelected(object? sender, SelectedItemChangedEventArgs e)
+        private async void OnItemSelected(object? sender, SelectedItemChangedEventArgs e)
         {
             if (e.SelectedItem is ActionItem item)
             {
@@ -435,13 +435,16 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                     _cancelButton.IsEnabled = false;
 
                     // Dismiss with or without animation based on theme setting
-                    MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
+                    // IMPORTANT: Await the PopAsync to ensure dialog is fully removed
+                    // before returning the result. This prevents "duplicate key" errors
+                    // when the caller immediately shows another dialog.
+                    await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
                     _taskCompletionSource.TrySetResult(item.Value);
                 }
             }
         }
 
-        private void OnCancelClicked(object? sender, EventArgs e)
+        private async void OnCancelClicked(object? sender, EventArgs e)
         {
             // If in a submenu, navigate back
             if (_navigationStack.Count > 0)
@@ -455,7 +458,8 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 _cancelButton.IsEnabled = false;
 
                 // Dismiss with or without animation based on theme setting
-                MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
+                // IMPORTANT: Await the PopAsync to ensure dialog is fully removed
+                await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
                 _taskCompletionSource.TrySetResult(-1);
             }
         }

@@ -305,13 +305,18 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
 
         protected override bool HandleBackButton()
         {
-            // Back button acts as cancel
+            // Back button acts as cancel - call async helper
+            HandleBackButtonAsync();
+            return true;
+        }
+
+        private async void HandleBackButtonAsync()
+        {
             _okButton.IsEnabled = false;
             _cancelButton.IsEnabled = false;
             _inputEntry.IsEnabled = false;
-            MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
+            await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
             _taskCompletionSource.TrySetResult(null);
-            return true;
         }
 
         protected override void OnThemeApplied(DialogTheme theme)
