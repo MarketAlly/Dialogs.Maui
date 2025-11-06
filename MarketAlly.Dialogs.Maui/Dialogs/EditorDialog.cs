@@ -65,7 +65,9 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 Keyboard = keyboard ?? Keyboard.Default,
                 AutoSize = EditorAutoSizeOption.TextChanges,
                 MinimumHeightRequest = minLines * 20, // Approximate line height
-                MaximumHeightRequest = maxLines * 20
+                MaximumHeightRequest = maxLines * 20,
+                IsSpellCheckEnabled = true, // Explicitly set to default value to ensure proper initialization
+                IsTextPredictionEnabled = true // Explicitly set to default value to ensure proper initialization
             };
 
             // Wrap editor in a scrollview for long content
@@ -84,21 +86,12 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 cancelText ?? DialogService.Localization.CancelButtonText,
                 OnCancelClicked);
 
-            // Build layout
+            // Build layout with dynamic row definitions
             var grid = new Grid
             {
                 Padding = 10,
                 BackgroundColor = Colors.Transparent,
                 ColumnSpacing = 5,
-                RowDefinitions =
-                {
-                    new RowDefinition(GridLength.Auto),  // Icon
-                    new RowDefinition(GridLength.Auto),  // Title
-                    new RowDefinition(GridLength.Auto),  // Description
-                    new RowDefinition(1),                // Separator
-                    new RowDefinition(GridLength.Star),  // Editor in ScrollView
-                    new RowDefinition(GridLength.Auto)   // Buttons
-                },
                 ColumnDefinitions =
                 {
                     new ColumnDefinition(GridLength.Star),
@@ -111,31 +104,37 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             // Add icon if dialog type is specified
             if (dialogType != DialogType.None)
             {
+                grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));  // Icon
                 grid.Add(_iconImage, 0, row);
                 Grid.SetColumnSpan(_iconImage, 2);
                 row++;
             }
 
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));  // Title
             grid.Add(_titleLabel, 0, row);
             Grid.SetColumnSpan(_titleLabel, 2);
             row++;
 
             if (!string.IsNullOrEmpty(description))
             {
+                grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));  // Description
                 grid.Add(_descriptionLabel, 0, row);
                 Grid.SetColumnSpan(_descriptionLabel, 2);
                 row++;
             }
 
+            grid.RowDefinitions.Add(new RowDefinition(1));  // Separator
             var separator = CreateSeparator();
             grid.Add(separator, 0, row);
             Grid.SetColumnSpan(separator, 2);
             row++;
 
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Star));  // Editor in ScrollView
             grid.Add(_scrollView, 0, row);
             Grid.SetColumnSpan(_scrollView, 2);
             row++;
 
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));  // Buttons
             grid.Add(_cancelButton, 0, row);
             grid.Add(_okButton, 1, row);
 
@@ -262,6 +261,24 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         protected override void OnThemeApplied(DialogTheme theme)
         {
             base.OnThemeApplied(theme);
+
+            // Update title label properties from theme
+            // Store text and clear to force re-render (MAUI bug workaround)
+            var titleText = _titleLabel.Text;
+            _titleLabel.Text = "";
+            _titleLabel.MaxLines = theme.TitleMaxLines;
+            _titleLabel.LineBreakMode = theme.TitleLineBreakMode;
+            _titleLabel.FontSize = theme.TitleFontSize;
+            _titleLabel.FontAttributes = theme.TitleFontAttributes;
+            _titleLabel.TextColor = theme.TitleTextColor;
+            _titleLabel.InvalidateMeasure();
+            _titleLabel.Text = titleText;
+            _titleLabel.InvalidateMeasure();
+
+            // Update description label properties from theme
+            _descriptionLabel.TextColor = theme.DescriptionTextColor;
+            _descriptionLabel.FontSize = theme.DescriptionFontSize;
+            _descriptionLabel.TextType = theme.DescriptionTextType;
 
             // Update editor colors
             _inputEditor.TextColor = theme.DescriptionTextColor;

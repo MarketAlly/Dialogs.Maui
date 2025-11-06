@@ -30,7 +30,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>MarketAlly.Dialogs.Maui</PackageId>
     <Title>MarketAlly Dialogs for .NET MAUI</Title>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>David H Friedel Jr</Authors>
     <Company>MarketAlly</Company>
     <Description>A comprehensive, production-ready dialog library for .NET MAUI applications featuring 7 dialog types (Alert, Confirm, Prompt, Editor, Loading, ActionList, ColorPicker), built-in theming with dark/light mode support, internationalization (English, Spanish, French, German), custom icons, and extensive customization options. Supports iOS, Android, Windows, and macOS.</Description>
@@ -43,6 +43,21 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+Version 1.2.0 - Title &amp; Description Customization:
+
+NEW FEATURES:
+• Title MaxLines Support: Configure maximum number of lines for dialog titles via DialogTheme.TitleMaxLines (default: 2)
+• Title LineBreakMode: Configure how titles are truncated/wrapped via DialogTheme.TitleLineBreakMode (default: TailTruncation)
+• HTML Description Support: Enable HTML formatting in descriptions via DialogTheme.DescriptionTextType (default: Text)
+• Theme-level Control: Apply formatting globally through theme settings for consistent UX
+
+KNOWN LIMITATIONS:
+• HeadTruncation and MiddleTruncation may not render correctly on Windows due to MAUI framework limitations
+• For cross-platform compatibility, use TailTruncation (default), WordWrap, CharacterWrap, or NoWrap
+
+BREAKING CHANGES:
+• None - fully backward compatible with v1.1.0
+
 Version 1.1.0 - Enhanced Action List Dialog &amp; Improved UX:
 
 NEW FEATURES:

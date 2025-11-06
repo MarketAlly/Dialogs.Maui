@@ -55,6 +55,7 @@ namespace MarketAlly.Dialogs.Maui.Localization
                 ["button_cancel"] = "Cancel",
                 ["button_yes"] = "Yes",
                 ["button_no"] = "No",
+                ["back_button_text"] = "Back",
                 ["loading"] = "Loading...",
                 ["select_placeholder"] = "Select an option",
                 ["error_title"] = "Error",
@@ -92,6 +93,7 @@ namespace MarketAlly.Dialogs.Maui.Localization
                     strings["button_cancel"] = "Cancelar";
                     strings["button_yes"] = "Sí";
                     strings["button_no"] = "No";
+                    strings["back_button_text"] = "Atrás";
                     strings["loading"] = "Cargando...";
                     strings["select_placeholder"] = "Seleccione una opción";
                     strings["error_title"] = "Error";
@@ -120,6 +122,7 @@ namespace MarketAlly.Dialogs.Maui.Localization
                     strings["button_cancel"] = "Annuler";
                     strings["button_yes"] = "Oui";
                     strings["button_no"] = "Non";
+                    strings["back_button_text"] = "Retour";
                     strings["loading"] = "Chargement...";
                     strings["select_placeholder"] = "Sélectionnez une option";
                     strings["error_title"] = "Erreur";
@@ -148,6 +151,7 @@ namespace MarketAlly.Dialogs.Maui.Localization
                     strings["button_cancel"] = "Abbrechen";
                     strings["button_yes"] = "Ja";
                     strings["button_no"] = "Nein";
+                    strings["back_button_text"] = "Zurück";
                     strings["loading"] = "Laden...";
                     strings["select_placeholder"] = "Option auswählen";
                     strings["error_title"] = "Fehler";

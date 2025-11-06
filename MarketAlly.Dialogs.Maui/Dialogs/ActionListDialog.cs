@@ -21,6 +21,10 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         private readonly ObservableCollection<ActionItem> _items;
         private int _descriptionMaxLines = 1;
         private LineBreakMode _descriptionLineBreakMode = LineBreakMode.TailTruncation;
+        private readonly Stack<(string Title, List<ActionItem> Items)> _navigationStack = new();
+        private readonly string _rootTitle;
+        private readonly string _cancelText;
+        private readonly string _backText;
 
         /// <summary>
         /// Gets or sets the maximum number of lines for item descriptions
@@ -60,6 +64,9 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             _items = new ObservableCollection<ActionItem>(items);
             _descriptionMaxLines = descriptionMaxLines;
             _descriptionLineBreakMode = descriptionLineBreakMode;
+            _rootTitle = title;
+            _cancelText = cancelText ?? DialogService.Localization.CancelButtonText;
+            _backText = DialogService.Localization.GetString("back_button_text", "Back");
 
             // Create UI elements
             _titleLabel = CreateTitleLabel(title);
@@ -162,7 +169,8 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                     ColumnDefinitions =
                     {
                         new ColumnDefinition(GridLength.Auto),  // Icon column (fixed)
-                        new ColumnDefinition(GridLength.Star)   // Text column (fills space)
+                        new ColumnDefinition(GridLength.Star),   // Text column (fills space)
+                        new ColumnDefinition(GridLength.Auto)   // Chevron column (fixed)
                     },
                     RowDefinitions =
                     {
@@ -222,6 +230,19 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 detailLabel.SetBinding(Label.TextProperty, nameof(ActionItem.Detail));
                 detailLabel.SetBinding(Label.IsVisibleProperty, nameof(ActionItem.HasDetail));
                 grid.Add(detailLabel, 1, 1);
+
+                // Chevron icon for items with sub-items
+                var chevron = new Label
+                {
+                    Text = ">",
+                    FontSize = 18,
+                    TextColor = CurrentTheme.DescriptionTextColor.WithAlpha(0.5f),
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.End
+                };
+                chevron.SetBinding(Label.IsVisibleProperty, nameof(ActionItem.HasSubItems));
+                grid.Add(chevron, 2, 0);
+                Grid.SetRowSpan(chevron, 2);
 
                 var viewCell = new ViewCell
                 {
@@ -366,12 +387,21 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
 
         protected override bool HandleBackButton()
         {
-            // Back button acts as cancel
-            _listView.IsEnabled = false;
-            _cancelButton.IsEnabled = false;
-            MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
-            _taskCompletionSource.TrySetResult(-1);
-            return true;
+            // If in a submenu, navigate back
+            if (_navigationStack.Count > 0)
+            {
+                NavigateBack();
+                return true;
+            }
+            else
+            {
+                // At root level, cancel the dialog
+                _listView.IsEnabled = false;
+                _cancelButton.IsEnabled = false;
+                MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
+                _taskCompletionSource.TrySetResult(-1);
+                return true;
+            }
         }
 
         protected override void OnThemeApplied(DialogTheme theme)
@@ -387,30 +417,102 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             }
         }
 
-        private async void OnItemSelected(object? sender, SelectedItemChangedEventArgs e)
+        private void OnItemSelected(object? sender, SelectedItemChangedEventArgs e)
         {
             if (e.SelectedItem is ActionItem item)
             {
-                // Prevent further interaction
-                _listView.IsEnabled = false;
-                _cancelButton.IsEnabled = false;
                 _listView.SelectedItem = null;
 
-                // Dismiss with or without animation based on theme setting
-                await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
-                _taskCompletionSource.TrySetResult(item.Value);
+                // If item has sub-items, navigate to them
+                if (item.HasSubItems && item.SubItems != null)
+                {
+                    NavigateToSubItems(item.Name, item.SubItems);
+                }
+                else
+                {
+                    // Prevent further interaction
+                    _listView.IsEnabled = false;
+                    _cancelButton.IsEnabled = false;
+
+                    // Dismiss with or without animation based on theme setting
+                    MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
+                    _taskCompletionSource.TrySetResult(item.Value);
+                }
             }
         }
 
-        private async void OnCancelClicked(object? sender, EventArgs e)
+        private void OnCancelClicked(object? sender, EventArgs e)
         {
-            // Prevent further interaction
-            _listView.IsEnabled = false;
-            _cancelButton.IsEnabled = false;
+            // If in a submenu, navigate back
+            if (_navigationStack.Count > 0)
+            {
+                NavigateBack();
+            }
+            else
+            {
+                // At root level, cancel the dialog
+                _listView.IsEnabled = false;
+                _cancelButton.IsEnabled = false;
 
-            // Dismiss with or without animation based on theme setting
-            await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
-            _taskCompletionSource.TrySetResult(-1);
+                // Dismiss with or without animation based on theme setting
+                MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
+                _taskCompletionSource.TrySetResult(-1);
+            }
+        }
+
+        private void NavigateToSubItems(string title, List<ActionItem> subItems)
+        {
+            // Save current state
+            _navigationStack.Push((_titleLabel.Text ?? _rootTitle, _items.ToList()));
+
+            // Update title
+            _titleLabel.Text = title;
+
+            // Update items
+            _items.Clear();
+            foreach (var item in subItems)
+            {
+                _items.Add(item);
+            }
+
+            // Update button text to "Back"
+            _cancelButton.Text = _backText;
+
+            // Recalculate height and scrollbar
+            _containerFrame.HeightRequest = CalculateDialogHeight(subItems.Count);
+            _listView.VerticalScrollBarVisibility = ShouldShowScrollBar(subItems.Count)
+                ? ScrollBarVisibility.Always
+                : ScrollBarVisibility.Never;
+        }
+
+        private void NavigateBack()
+        {
+            if (_navigationStack.Count > 0)
+            {
+                var (title, items) = _navigationStack.Pop();
+
+                // Restore previous title
+                _titleLabel.Text = title;
+
+                // Restore previous items
+                _items.Clear();
+                foreach (var item in items)
+                {
+                    _items.Add(item);
+                }
+
+                // If back at root, change button text back to "Cancel"
+                if (_navigationStack.Count == 0)
+                {
+                    _cancelButton.Text = _cancelText;
+                }
+
+                // Recalculate height and scrollbar
+                _containerFrame.HeightRequest = CalculateDialogHeight(items.Count);
+                _listView.VerticalScrollBarVisibility = ShouldShowScrollBar(items.Count)
+                    ? ScrollBarVisibility.Always
+                    : ScrollBarVisibility.Never;
+            }
         }
     }
 

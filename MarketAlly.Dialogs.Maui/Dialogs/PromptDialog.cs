@@ -15,6 +15,7 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
     {
         private readonly TaskCompletionSource<string?> _taskCompletionSource = new();
         private readonly Label _titleLabel;
+        private readonly Label _descriptionLabel;
         private readonly Entry _inputEntry;
         private readonly Button _okButton;
         private readonly Button _cancelButton;
@@ -24,7 +25,9 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
 
         public PromptDialog(
             string title,
+            string? description = null,
             string? placeholder = null,
+            string? defaultValue = null,
             string? okText = null,
             string? cancelText = null,
             DialogType dialogType = DialogType.None,
@@ -45,10 +48,20 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
 
             _titleLabel = CreateTitleLabel(title);
 
+            if (!string.IsNullOrEmpty(description))
+            {
+                _descriptionLabel = CreateDescriptionLabel(description);
+            }
+            else
+            {
+                _descriptionLabel = new Label { IsVisible = false };
+            }
+
             var theme = CurrentTheme;
             _inputEntry = new Entry
             {
                 Placeholder = placeholder,
+                Text = defaultValue,
                 FontSize = theme.DescriptionFontSize,
                 TextColor = theme.DescriptionTextColor,
                 PlaceholderColor = theme.DescriptionTextColor.WithAlpha(0.5f),
@@ -82,20 +95,13 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 cancelText ?? DialogService.Localization.CancelButtonText,
                 OnCancelClicked);
 
-            // Build layout
+            // Build layout with dynamic row definitions
             var grid = new Grid
             {
                 Padding = 10,
                 BackgroundColor = Colors.Transparent,
                 ColumnSpacing = 5,
-                RowDefinitions =
-                {
-                    new RowDefinition(GridLength.Auto),
-                    new RowDefinition(GridLength.Auto),
-                    new RowDefinition(1),
-                    new RowDefinition(GridLength.Star),
-                    new RowDefinition(GridLength.Auto)
-                },
+                RowSpacing = 10,
                 ColumnDefinitions =
                 {
                     new ColumnDefinition(GridLength.Star),
@@ -103,25 +109,43 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 }
             };
 
+            int row = 0;
+
             // Add icon if dialog type is specified
             if (dialogType != DialogType.None)
             {
-                grid.Add(_iconImage, 0, 0);
+                grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));  // Icon
+                grid.Add(_iconImage, 0, row);
                 Grid.SetColumnSpan(_iconImage, 2);
+                row++;
             }
 
-            grid.Add(_titleLabel, 0, 1);
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));  // Title
+            grid.Add(_titleLabel, 0, row);
             Grid.SetColumnSpan(_titleLabel, 2);
+            row++;
 
+            if (!string.IsNullOrEmpty(description))
+            {
+                grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));  // Description
+                grid.Add(_descriptionLabel, 0, row);
+                Grid.SetColumnSpan(_descriptionLabel, 2);
+                row++;
+            }
+
+            grid.RowDefinitions.Add(new RowDefinition(1));  // Separator
             var separator = CreateSeparator();
-            grid.Add(separator, 0, 2);
+            grid.Add(separator, 0, row);
             Grid.SetColumnSpan(separator, 2);
+            row++;
 
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));  // Input field
             // Add input field with optional password toggle
             if (_isPasswordField && _togglePasswordButton != null)
             {
                 var inputGrid = new Grid
                 {
+                    Margin = new Thickness(0, 5, 0, 5),
                     ColumnDefinitions =
                     {
                         new ColumnDefinition(GridLength.Star),
@@ -131,17 +155,23 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 inputGrid.Add(_inputEntry, 0, 0);
                 inputGrid.Add(_togglePasswordButton, 1, 0);
 
-                grid.Add(inputGrid, 0, 3);
+                grid.Add(inputGrid, 0, row);
                 Grid.SetColumnSpan(inputGrid, 2);
             }
             else
             {
-                grid.Add(_inputEntry, 0, 3);
+                _inputEntry.Margin = new Thickness(0, 5, 0, 5);
+                grid.Add(_inputEntry, 0, row);
                 Grid.SetColumnSpan(_inputEntry, 2);
             }
+            row++;
 
-            grid.Add(_cancelButton, 0, 4);
-            grid.Add(_okButton, 1, 4);
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Star));  // Spacer to push buttons down
+            row++;
+
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));  // Buttons
+            grid.Add(_cancelButton, 0, row);
+            grid.Add(_okButton, 1, row);
 
             // Create frame with auto-sizing for prompt
             var frame = CreateThemedFrame(grid);
@@ -158,6 +188,19 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         {
             get => _inputEntry.Text ?? string.Empty;
             set => _inputEntry.Text = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the description text
+        /// </summary>
+        public string? Description
+        {
+            get => _descriptionLabel.Text;
+            set
+            {
+                _descriptionLabel.Text = value;
+                _descriptionLabel.IsVisible = !string.IsNullOrEmpty(value);
+            }
         }
 
         /// <summary>
@@ -190,9 +233,13 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         /// <summary>
         /// Shows a prompt dialog with default settings
         /// </summary>
-        public static async Task<string?> ShowAsync(string title, string? placeholder = null, DialogType type = DialogType.None)
+        public static async Task<string?> ShowAsync(
+            string title,
+            string? description = null,
+            string? placeholder = null,
+            DialogType type = DialogType.None)
         {
-            return await ShowAsync(title, placeholder, null, null, type);
+            return await ShowAsync(title, description, placeholder, null, null, null, type);
         }
 
         /// <summary>
@@ -200,7 +247,9 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         /// </summary>
         public static async Task<string?> ShowAsync(
             string title,
+            string? description,
             string? placeholder,
+            string? defaultValue,
             string? okText,
             string? cancelText,
             DialogType type = DialogType.None)
@@ -209,7 +258,7 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             if (MopupService.Instance.PopupStack.Any(p => p is PromptDialog))
                 return null;
 
-            var dialog = new PromptDialog(title, placeholder, okText, cancelText, type);
+            var dialog = new PromptDialog(title, description, placeholder, defaultValue, okText, cancelText, type);
             await MopupService.Instance.PushAsync(dialog);
             return await dialog._taskCompletionSource.Task;
         }
@@ -219,14 +268,16 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         /// </summary>
         public static async Task<string?> ShowAsync(
             string title,
+            string? description,
             string? placeholder,
+            string? defaultValue,
             Keyboard keyboard,
             DialogType type = DialogType.None)
         {
             if (MopupService.Instance.PopupStack.Any(p => p is PromptDialog))
                 return null;
 
-            var dialog = new PromptDialog(title, placeholder, null, null, type, keyboard);
+            var dialog = new PromptDialog(title, description, placeholder, defaultValue, null, null, type, keyboard);
             await MopupService.Instance.PushAsync(dialog);
             return await dialog._taskCompletionSource.Task;
         }
@@ -267,9 +318,27 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         {
             base.OnThemeApplied(theme);
 
-            // Update editor colors
+            // Update title label properties from theme
+            // Store text and clear to force re-render (MAUI bug workaround)
+            var titleText = _titleLabel.Text;
+            _titleLabel.Text = "";
+            _titleLabel.MaxLines = theme.TitleMaxLines;
+            _titleLabel.LineBreakMode = theme.TitleLineBreakMode;
+            _titleLabel.FontSize = theme.TitleFontSize;
+            _titleLabel.FontAttributes = theme.TitleFontAttributes;
+            _titleLabel.TextColor = theme.TitleTextColor;
+            _titleLabel.InvalidateMeasure();
+            _titleLabel.Text = titleText;
+            _titleLabel.InvalidateMeasure();
+
+            // Update input colors
             _inputEntry.TextColor = theme.DescriptionTextColor;
             _inputEntry.PlaceholderColor = theme.DescriptionTextColor.WithAlpha(0.5f);
+
+            // Update description label colors and properties
+            _descriptionLabel.TextColor = theme.DescriptionTextColor;
+            _descriptionLabel.FontSize = theme.DescriptionFontSize;
+            _descriptionLabel.TextType = theme.DescriptionTextType;
 
             // Update icon if theme changes
             if (DialogType != DialogType.None)

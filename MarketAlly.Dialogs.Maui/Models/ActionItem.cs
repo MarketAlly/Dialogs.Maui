@@ -46,6 +46,16 @@ namespace MarketAlly.Dialogs.Maui.Models
         public Guid ItemId { get; set; }
 
         /// <summary>
+        /// Gets or sets the sub-items for hierarchical menus
+        /// </summary>
+        public List<ActionItem>? SubItems { get; set; }
+
+        /// <summary>
+        /// Gets whether this item has sub-items
+        /// </summary>
+        public bool HasSubItems => SubItems != null && SubItems.Count > 0;
+
+        /// <summary>
         /// Creates a new action item with name, detail, and value
         /// </summary>
         public ActionItem(string name, string? detail, int value, Guid? itemId = null)

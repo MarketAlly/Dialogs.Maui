@@ -98,7 +98,7 @@ namespace MarketAlly.Dialogs.Maui.Core
         {
             // Use the DialogService's current theme which respects overrides
             var currentTheme = DialogService.CurrentTheme;
-            var isDarkTheme = currentTheme == DialogService.DarkTheme;
+            var isDarkTheme = currentTheme.IsDarkMode;
 
             // Check for custom icons first
             if (!string.IsNullOrEmpty(CustomLightIcon) && !string.IsNullOrEmpty(CustomDarkIcon))
@@ -202,6 +202,8 @@ namespace MarketAlly.Dialogs.Maui.Core
                 FontSize = theme.TitleFontSize,
                 FontAttributes = theme.TitleFontAttributes,
                 FontFamily = theme.TitleFontFamily,
+                MaxLines = theme.TitleMaxLines,
+                LineBreakMode = theme.TitleLineBreakMode,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalOptions = LayoutOptions.Start
             };
@@ -220,6 +222,7 @@ namespace MarketAlly.Dialogs.Maui.Core
                 TextColor = theme.DescriptionTextColor,
                 FontSize = theme.DescriptionFontSize,
                 FontFamily = theme.DescriptionFontFamily,
+                TextType = theme.DescriptionTextType,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
                 VerticalOptions = LayoutOptions.CenterAndExpand,

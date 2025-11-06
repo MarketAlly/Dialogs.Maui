@@ -29,9 +29,12 @@ namespace MarketAlly.Dialogs.Maui.Models
         public string TitleFontFamily { get; set; } = string.Empty;
         public double TitleFontSize { get; set; } = 16;
         public FontAttributes TitleFontAttributes { get; set; } = FontAttributes.Bold;
+        public int TitleMaxLines { get; set; } = 2;
+        public LineBreakMode TitleLineBreakMode { get; set; } = LineBreakMode.TailTruncation;
 
         public string DescriptionFontFamily { get; set; } = string.Empty;
         public double DescriptionFontSize { get; set; } = 14;
+        public TextType DescriptionTextType { get; set; } = TextType.Text;
 
         public string ButtonFontFamily { get; set; } = string.Empty;
         public double ButtonFontSize { get; set; } = 14;
@@ -49,6 +52,9 @@ namespace MarketAlly.Dialogs.Maui.Models
 
         // Shadow
         public bool HasShadow { get; set; } = true;
+
+        // Theme type
+        public bool IsDarkMode { get; set; } = false;
 
         /// <summary>
         /// Creates a default light theme
@@ -71,7 +77,8 @@ namespace MarketAlly.Dialogs.Maui.Models
             ButtonBackgroundColor = Color.FromRgba("#0A84FF"),
             ButtonBorderColor = Color.FromRgba("#0A84FF"),
             SecondaryButtonBackgroundColor = Color.FromRgba("#2C2C2E"),
-            SecondaryButtonBorderColor = Color.FromRgba("#3A3A3C")
+            SecondaryButtonBorderColor = Color.FromRgba("#3A3A3C"),
+            IsDarkMode = true
         };
 
         /// <summary>
@@ -96,8 +103,11 @@ namespace MarketAlly.Dialogs.Maui.Models
                 TitleFontFamily = TitleFontFamily,
                 TitleFontSize = TitleFontSize,
                 TitleFontAttributes = TitleFontAttributes,
+                TitleMaxLines = TitleMaxLines,
+                TitleLineBreakMode = TitleLineBreakMode,
                 DescriptionFontFamily = DescriptionFontFamily,
                 DescriptionFontSize = DescriptionFontSize,
+                DescriptionTextType = DescriptionTextType,
                 ButtonFontFamily = ButtonFontFamily,
                 ButtonFontSize = ButtonFontSize,
                 DialogWidth = DialogWidth,
@@ -106,7 +116,9 @@ namespace MarketAlly.Dialogs.Maui.Models
                 DialogPadding = DialogPadding,
                 ButtonHeight = ButtonHeight,
                 AnimationDuration = AnimationDuration,
-                EnableAnimation = EnableAnimation
+                EnableAnimation = EnableAnimation,
+                HasShadow = HasShadow,
+                IsDarkMode = IsDarkMode
             };
         }
     }

@@ -196,6 +196,24 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             {
                 _iconImage.Source = GetDialogIcon();
             }
+
+            // Update title label properties from theme
+            // Store text and clear to force re-render (MAUI bug workaround)
+            var titleText = _titleLabel.Text;
+            _titleLabel.Text = "";
+            _titleLabel.MaxLines = theme.TitleMaxLines;
+            _titleLabel.LineBreakMode = theme.TitleLineBreakMode;
+            _titleLabel.FontSize = theme.TitleFontSize;
+            _titleLabel.FontAttributes = theme.TitleFontAttributes;
+            _titleLabel.TextColor = theme.TitleTextColor;
+            _titleLabel.InvalidateMeasure();
+            _titleLabel.Text = titleText;
+            _titleLabel.InvalidateMeasure();
+
+            // Update description label properties from theme
+            _descriptionLabel.TextColor = theme.DescriptionTextColor;
+            _descriptionLabel.FontSize = theme.DescriptionFontSize;
+            _descriptionLabel.TextType = theme.DescriptionTextType;
         }
 
         private async void OnConfirmClicked(object? sender, EventArgs e)

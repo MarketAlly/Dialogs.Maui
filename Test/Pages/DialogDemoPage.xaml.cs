@@ -100,7 +100,9 @@ public partial class DialogDemoPage : ContentPage
     {
         var result = await PromptDialog.ShowAsync(
             "Enter Name",
+            "Please enter your full name below:",
             "Your name here",
+            null,
             "OK",
             "Cancel",
             DialogType.None);
@@ -115,7 +117,9 @@ public partial class DialogDemoPage : ContentPage
         // Create a password prompt with masked input
         var dialog = new PromptDialog(
             "Enter Password",
+            "Please enter your password to continue:",
             "Enter your password",
+            null,
             "Login",
             "Cancel",
             DialogType.None,
@@ -668,6 +672,89 @@ public partial class DialogDemoPage : ContentPage
         ResultLabel.Text = "Custom dialog shown";
     }
 
+    private async void OnHierarchicalMenuClicked(object sender, EventArgs e)
+    {
+        // Create hierarchical menu structure
+        var actions = new List<ActionItem>
+        {
+            new ActionItem("File", "File operations", 0, "task_alt_black_48dp", "task_alt_white_48dp")
+            {
+                SubItems = new List<ActionItem>
+                {
+                    new ActionItem("New", "Create a new document", 100),
+                    new ActionItem("Open", "Open an existing document", 101),
+                    new ActionItem("Save", "Save the current document", 102),
+                    new ActionItem("Export", "Export to various formats", 103)
+                    {
+                        SubItems = new List<ActionItem>
+                        {
+                            new ActionItem("PDF", "Export as PDF", 1000),
+                            new ActionItem("Word", "Export as Word document", 1001),
+                            new ActionItem("Excel", "Export as Excel spreadsheet", 1002),
+                            new ActionItem("HTML", "Export as HTML", 1003)
+                        }
+                    },
+                    new ActionItem("Print", "Print the document", 104)
+                }
+            },
+            new ActionItem("Edit", "Edit operations", 1, "info_black_48dp", "info_white_48dp")
+            {
+                SubItems = new List<ActionItem>
+                {
+                    new ActionItem("Undo", "Undo last action", 200),
+                    new ActionItem("Redo", "Redo last action", 201),
+                    new ActionItem("Cut", "Cut selection", 202),
+                    new ActionItem("Copy", "Copy selection", 203),
+                    new ActionItem("Paste", "Paste from clipboard", 204)
+                }
+            },
+            new ActionItem("View", "View options", 2, "help_outline_black_48dp", "help_outline_white_48dp")
+            {
+                SubItems = new List<ActionItem>
+                {
+                    new ActionItem("Zoom In", "Increase zoom level", 300),
+                    new ActionItem("Zoom Out", "Decrease zoom level", 301),
+                    new ActionItem("Full Screen", "Toggle full screen mode", 302),
+                    new ActionItem("Themes", "Choose a theme", 303)
+                    {
+                        SubItems = new List<ActionItem>
+                        {
+                            new ActionItem("Light", "Light theme", 3000),
+                            new ActionItem("Dark", "Dark theme", 3001),
+                            new ActionItem("Blue", "Blue theme", 3002),
+                            new ActionItem("Green", "Green theme", 3003)
+                        }
+                    }
+                }
+            },
+            new ActionItem("Help", "Get help", 3, "help_outline_black_48dp", "help_outline_white_48dp")
+            {
+                SubItems = new List<ActionItem>
+                {
+                    new ActionItem("Documentation", "View documentation", 400),
+                    new ActionItem("Tutorials", "Watch tutorials", 401),
+                    new ActionItem("About", "About this app", 402)
+                }
+            }
+        };
+
+        var dialog = new ActionListDialog(
+            "Main Menu",
+            actions,
+            "Cancel");
+
+        var result = await dialog.ShowAsync();
+
+        if (result >= 0)
+        {
+            ResultLabel.Text = $"Selected menu item with value: {result}";
+        }
+        else
+        {
+            ResultLabel.Text = "Hierarchical menu cancelled";
+        }
+    }
+
     private async void OnLongTitleAlertClicked(object sender, EventArgs e)
     {
         var dialog = new AlertDialog(
@@ -696,5 +783,155 @@ public partial class DialogDemoPage : ContentPage
 
         await MopupService.Instance.PushAsync(dialog);
         ResultLabel.Text = "Long description alert shown with custom padding";
+    }
+
+    // New Features v1.2.0 Event Handlers
+
+    private async void OnTitleMaxLinesClicked(object sender, EventArgs e)
+    {
+        // Create a custom theme with TitleMaxLines = 1 to show truncation
+        var customTheme = _dialogService.CurrentTheme.Clone();
+        customTheme.TitleMaxLines = 1;
+        customTheme.TitleLineBreakMode = LineBreakMode.TailTruncation;
+
+        var originalTheme = _dialogService.CurrentThemeOverride;
+        _dialogService.CurrentThemeOverride = customTheme;
+
+        var dialog = new AlertDialog(
+            "This is a very long title that would normally wrap to multiple lines but now gets truncated to a single line with ellipsis",
+            "Notice how the title is limited to 1 line with ellipsis (...). This demonstrates the TitleMaxLines feature.",
+            "OK",
+            DialogType.Info);
+
+        await MopupService.Instance.PushAsync(dialog);
+
+        // Restore original theme
+        _dialogService.CurrentThemeOverride = originalTheme;
+
+        ResultLabel.Text = "Title MaxLines demo shown (1 line with tail truncation)";
+    }
+
+    private async void OnTitleLineBreakModeClicked(object sender, EventArgs e)
+    {
+        // Let user choose which LineBreakMode to test
+        var modeOptions = new List<ActionItem>
+        {
+            new ActionItem("TailTruncation", "Text ends with ... (default)", 0),
+            new ActionItem("HeadTruncation", "Text starts with ...", 1),
+            new ActionItem("MiddleTruncation", "Text has ... in the middle", 2),
+            new ActionItem("WordWrap", "Wraps at word boundaries", 3),
+            new ActionItem("CharacterWrap", "Wraps at any character", 4),
+            new ActionItem("NoWrap", "No wrapping (may overflow)", 5)
+        };
+
+        var modeDialog = new ActionListDialog(
+            "Choose Title LineBreakMode",
+            modeOptions,
+            "Cancel");
+
+        var modeChoice = await modeDialog.ShowAsync();
+
+        if (modeChoice == -1)
+        {
+            ResultLabel.Text = "Title LineBreakMode demo cancelled";
+            return;
+        }
+
+        // Map selection to LineBreakMode
+        var lineBreakMode = modeChoice switch
+        {
+            0 => LineBreakMode.TailTruncation,
+            1 => LineBreakMode.HeadTruncation,
+            2 => LineBreakMode.MiddleTruncation,
+            3 => LineBreakMode.WordWrap,
+            4 => LineBreakMode.CharacterWrap,
+            5 => LineBreakMode.NoWrap,
+            _ => LineBreakMode.TailTruncation
+        };
+
+        var customTheme = _dialogService.CurrentTheme.Clone();
+        // Use 1 line for all modes to make truncation differences obvious
+        customTheme.TitleMaxLines = 1;
+        customTheme.TitleLineBreakMode = lineBreakMode;
+        // Make dialog narrower to force truncation
+        customTheme.DialogWidth = 280;
+
+        var originalTheme = _dialogService.CurrentThemeOverride;
+        _dialogService.CurrentThemeOverride = customTheme;
+
+        var platformNote = (modeChoice == 1 || modeChoice == 2)
+            ? "\n\n⚠️ NOTE: HeadTruncation and MiddleTruncation may not work on Windows due to MAUI platform limitations."
+            : "";
+
+        var dialog = new AlertDialog(
+            "This is an extremely long title that will definitely demonstrate the LineBreakMode truncation behavior clearly",
+            $"Selected mode: {modeOptions[modeChoice].Name}\n\nTail truncation adds ... at the end.\nHead truncation adds ... at the start.\nMiddle truncation adds ... in the middle.{platformNote}",
+            "OK",
+            DialogType.Info);
+
+        await MopupService.Instance.PushAsync(dialog);
+
+        // Explicitly set the LineBreakMode after dialog is displayed to ensure it's applied
+        await Task.Delay(50);
+        dialog.SetTitleLineBreakMode(lineBreakMode);
+
+        // Verify what's actually set
+        var actualMode = dialog.GetTitleLineBreakMode();
+
+        _dialogService.CurrentThemeOverride = originalTheme;
+
+        ResultLabel.Text = $"Title LineBreakMode: {modeOptions[modeChoice].Name} (Actual: {actualMode})";
+    }
+
+    private async void OnHtmlDescriptionClicked(object sender, EventArgs e)
+    {
+        // Create a custom theme with HTML support enabled
+        var customTheme = _dialogService.CurrentTheme.Clone();
+        customTheme.DescriptionTextType = TextType.Html;
+
+        var originalTheme = _dialogService.CurrentThemeOverride;
+        _dialogService.CurrentThemeOverride = customTheme;
+
+        var dialog = new AlertDialog(
+            "HTML Formatting Enabled",
+            "This description uses <b>bold text</b>, <i>italic text</i>, and <u>underlined text</u>.<br/><br/>" +
+            "You can use <strong>strong emphasis</strong> and <em>emphasized text</em>.<br/><br/>" +
+            "Perfect for <b>formatted error messages</b>, <i>important notices</i>, or <u>highlighted information</u>!",
+            "Got It",
+            DialogType.Success);
+
+        await MopupService.Instance.PushAsync(dialog);
+
+        _dialogService.CurrentThemeOverride = originalTheme;
+
+        ResultLabel.Text = "HTML Description demo shown (TextType.Html enabled)";
+    }
+
+    private async void OnCombinedFeaturesClicked(object sender, EventArgs e)
+    {
+        // Create a theme that demonstrates all new features together
+        var customTheme = _dialogService.CurrentTheme.Clone();
+        customTheme.TitleMaxLines = 2;
+        customTheme.TitleLineBreakMode = LineBreakMode.TailTruncation;
+        customTheme.DescriptionTextType = TextType.Html;
+
+        var originalTheme = _dialogService.CurrentThemeOverride;
+        _dialogService.CurrentThemeOverride = customTheme;
+
+        var dialog = new AlertDialog(
+            "Combined Features Demo: This Long Title Shows TitleMaxLines and LineBreakMode Working Together",
+            "<b>Version 1.2.0 Features:</b><br/><br/>" +
+            "• <b>TitleMaxLines</b>: Limits title to 2 lines<br/>" +
+            "• <b>TitleLineBreakMode</b>: TailTruncation with ...<br/>" +
+            "• <b>DescriptionTextType</b>: HTML formatting enabled<br/><br/>" +
+            "<i>All features work together seamlessly!</i>",
+            "Awesome!",
+            DialogType.Success);
+
+        await MopupService.Instance.PushAsync(dialog);
+
+        _dialogService.CurrentThemeOverride = originalTheme;
+
+        ResultLabel.Text = "Combined features demo shown (all v1.2.0 features together)";
     }
 }

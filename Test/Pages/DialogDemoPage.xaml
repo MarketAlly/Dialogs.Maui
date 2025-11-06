@@ -103,6 +103,11 @@
                     BackgroundColor="RoyalBlue"
                     TextColor="White"/>
 
+            <Button Text="Hierarchical Menu with Submenus"
+                    Clicked="OnHierarchicalMenuClicked"
+                    BackgroundColor="Indigo"
+                    TextColor="White"/>
+
             <Button Text="Test Chained Dialogs"
                     Clicked="OnChainedDialogsClicked"
                     BackgroundColor="DarkSlateBlue"
@@ -201,6 +206,32 @@
             <Button Text="Alert with Long Description"
                     Clicked="OnLongDescriptionAlertClicked"
                     BackgroundColor="Olive"
+                    TextColor="White"/>
+
+            <!-- New Features v1.2.0 -->
+            <Label Text="New Features (v1.2.0)"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Title MaxLines Demo"
+                    Clicked="OnTitleMaxLinesClicked"
+                    BackgroundColor="DarkCyan"
+                    TextColor="White"/>
+
+            <Button Text="Title LineBreakMode Demo"
+                    Clicked="OnTitleLineBreakModeClicked"
+                    BackgroundColor="Teal"
+                    TextColor="White"/>
+
+            <Button Text="HTML Description Demo"
+                    Clicked="OnHtmlDescriptionClicked"
+                    BackgroundColor="DarkOrange"
+                    TextColor="White"/>
+
+            <Button Text="Combined New Features Demo"
+                    Clicked="OnCombinedFeaturesClicked"
+                    BackgroundColor="Crimson"
                     TextColor="White"/>
 
             <!-- Result Display -->

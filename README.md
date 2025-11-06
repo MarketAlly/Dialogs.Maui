@@ -347,7 +347,10 @@ var customLightTheme = new DialogTheme
     // Typography
     TitleFontSize = 18,
     TitleFontAttributes = FontAttributes.Bold,
+    TitleMaxLines = 2,
+    TitleLineBreakMode = LineBreakMode.TailTruncation,
     DescriptionFontSize = 14,
+    DescriptionTextType = TextType.Text,  // or TextType.Html for HTML support
     ButtonFontSize = 14,
 
     // Layout
@@ -384,6 +387,77 @@ DialogService.Instance.SetOverlayEnabled(false);
 // Custom overlay color
 DialogService.Instance.SetOverlayColor(Color.FromRgba("#CC000000"));
 ```
+
+### Title Customization
+
+Control how dialog titles are displayed across all dialog types:
+
+```csharp
+var theme = new DialogTheme
+{
+    TitleMaxLines = 2,                              // Maximum lines for title (default: 2)
+    TitleLineBreakMode = LineBreakMode.TailTruncation, // How to truncate/wrap title text
+    // ... other properties
+};
+
+// Available LineBreakMode options:
+// - TailTruncation: "This is a very long..." (default) ✅ Works on all platforms
+// - HeadTruncation: "...very long title" ⚠️ May not work on Windows
+// - MiddleTruncation: "This is...title" ⚠️ May not work on Windows
+// - WordWrap: Wraps at word boundaries ✅ Works on all platforms
+// - CharacterWrap: Wraps at any character ✅ Works on all platforms
+// - NoWrap: No wrapping, may overflow ✅ Works on all platforms
+
+DialogService.Instance.Initialize(theme);
+```
+
+**Benefits:**
+- Prevents layout issues with very long titles
+- Maintains consistent dialog heights
+- Works across all dialog types (Alert, Confirm, Prompt, etc.)
+- Customizable per theme (light/dark can have different settings)
+
+**Platform Notes:**
+- `HeadTruncation` and `MiddleTruncation` may not render correctly on Windows due to MAUI framework limitations
+- For cross-platform compatibility, use `TailTruncation` (default) or `WordWrap`
+
+### Description Text Type (HTML Support)
+
+Enable HTML formatting in dialog descriptions for rich text display:
+
+```csharp
+var theme = new DialogTheme
+{
+    DescriptionTextType = TextType.Html,  // Enable HTML formatting (default: Text)
+    // ... other properties
+};
+
+DialogService.Instance.Initialize(theme);
+
+// Now you can use HTML in descriptions
+await AlertDialog.ShowAsync(
+    "Welcome!",
+    "This is <b>bold</b> and this is <i>italic</i>.<br/>New line here!",
+    DialogType.Info
+);
+```
+
+**Available TextType options:**
+- `TextType.Text` - Plain text (default, no HTML parsing)
+- `TextType.Html` - Renders basic HTML tags like `<b>`, `<i>`, `<u>`, `<br/>`, etc.
+
+**Supported HTML tags:**
+- `<b>`, `<strong>` - Bold text
+- `<i>`, `<em>` - Italic text
+- `<u>` - Underlined text
+- `<br/>` - Line breaks
+- Basic text formatting
+
+**Use cases:**
+- Formatted error messages with bold keywords
+- Multi-line descriptions with proper line breaks
+- Emphasized text within descriptions
+- Rich informational dialogs
 
 ## 🌍 Localization
 

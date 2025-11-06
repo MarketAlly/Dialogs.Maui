@@ -89,6 +89,31 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         }
 
         /// <summary>
+        /// Sets the title label LineBreakMode (for testing/debugging)
+        /// </summary>
+        public void SetTitleLineBreakMode(LineBreakMode lineBreakMode)
+        {
+            // Store the current text
+            var currentText = _titleLabel.Text;
+
+            // Clear the text, update properties, then restore text
+            // This forces MAUI to re-render with the new LineBreakMode
+            _titleLabel.Text = "";
+            _titleLabel.LineBreakMode = lineBreakMode;
+            _titleLabel.InvalidateMeasure();
+            _titleLabel.Text = currentText;
+            _titleLabel.InvalidateMeasure();
+        }
+
+        /// <summary>
+        /// Gets the current title LineBreakMode (for testing/debugging)
+        /// </summary>
+        public LineBreakMode GetTitleLineBreakMode()
+        {
+            return _titleLabel.LineBreakMode;
+        }
+
+        /// <summary>
         /// Shows an alert dialog and waits for user acknowledgment
         /// </summary>
         public static async Task<bool> ShowAsync(string title, DialogType type = DialogType.None)
@@ -153,6 +178,24 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             {
                 _iconImage.Source = GetDialogIcon();
             }
+
+            // Update title label properties from theme
+            // Store text and clear to force re-render (MAUI bug workaround)
+            var titleText = _titleLabel.Text;
+            _titleLabel.Text = "";
+            _titleLabel.MaxLines = theme.TitleMaxLines;
+            _titleLabel.LineBreakMode = theme.TitleLineBreakMode;
+            _titleLabel.FontSize = theme.TitleFontSize;
+            _titleLabel.FontAttributes = theme.TitleFontAttributes;
+            _titleLabel.TextColor = theme.TitleTextColor;
+            _titleLabel.InvalidateMeasure();
+            _titleLabel.Text = titleText;
+            _titleLabel.InvalidateMeasure();
+
+            // Update description label properties from theme
+            _descriptionLabel.TextColor = theme.DescriptionTextColor;
+            _descriptionLabel.FontSize = theme.DescriptionFontSize;
+            _descriptionLabel.TextType = theme.DescriptionTextType;
         }
 
         private async void OnOkClicked(object? sender, EventArgs e)
