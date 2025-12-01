@@ -29,7 +29,9 @@ A comprehensive, production-ready dialog library for .NET MAUI applications with
 
 ### Core Capabilities
 
-- **9 Dialog Types**: Alert, Confirm, Prompt, Editor, Loading, Action List, Color Picker, Toast, and Snackbar
+- **12 Dialog Types**: Alert, Confirm, Prompt, Editor, Loading, Action List, Color Picker, Date Picker, Time Picker, DateTime Picker, Toast, and Snackbar
+- **Date/Time Pickers**: Native date and time selection with "Now" quick-select buttons (v1.5.0+)
+- **Design System Presets**: Material Design 3, Fluent Design, and Cupertino themes (v1.5.0+)
 - **Toast & Snackbar**: Lightweight notifications with optional actions and stacking (v1.4.0+)
 - **ActionItem Callbacks**: Define Action/AsyncAction directly on items for automatic invocation (v1.4.1+)
 - **Hierarchical Menus**: Multi-level action list navigation with automatic back navigation (v1.3.0+)
@@ -44,7 +46,8 @@ A comprehensive, production-ready dialog library for .NET MAUI applications with
 - **Async/Await Pattern**: Modern asynchronous dialog handling
 - **Memory Efficient**: Intelligent image caching and resource management
 - **Extensible Architecture**: Easy to create custom dialogs via `BaseDialog`
-- **Thread-Safe**: Singleton service pattern with proper synchronization
+- **Thread-Safe**: Singleton service pattern with proper synchronization (v1.5.0+)
+- **Production-Ready**: IDisposable pattern, proper exception handling, and logging support (v1.5.0+)
 - **Symbol Package Support**: Full debugging support with `.snupkg` packages
 
 ## Installation
@@ -419,6 +422,114 @@ var customDialog = new ColorPickerDialog(
 );
 ```
 
+### Date Picker Dialog (v1.5.0+)
+
+Select a date with optional constraints and quick "Today" button.
+
+```csharp
+// Basic date picker
+DateTime? selectedDate = await DatePickerDialog.ShowAsync(
+    "Select Date",
+    "Choose a date for the appointment");
+
+if (selectedDate.HasValue)
+{
+    Console.WriteLine($"Selected: {selectedDate.Value:d}");
+}
+
+// With date constraints
+DateTime? date = await DatePickerDialog.ShowAsync(
+    "Select Date",
+    "Choose a date within the next 30 days",
+    initialDate: DateTime.Today,
+    minDate: DateTime.Today,
+    maxDate: DateTime.Today.AddDays(30));
+
+// Full customization
+DateTime? date = await DatePickerDialog.ShowAsync(
+    "Delivery Date",
+    "When should we deliver?",
+    initialDate: DateTime.Today.AddDays(1),
+    minDate: DateTime.Today,
+    maxDate: DateTime.Today.AddMonths(3),
+    okText: "Confirm",
+    cancelText: "Back",
+    showTodayButton: true,
+    showClearButton: false,
+    dialogType: DialogType.Info);
+```
+
+### Time Picker Dialog (v1.5.0+)
+
+Select a time with optional "Now" quick-select button.
+
+```csharp
+// Basic time picker
+TimeSpan? selectedTime = await TimePickerDialog.ShowAsync(
+    "Select Time",
+    "Choose a reminder time");
+
+if (selectedTime.HasValue)
+{
+    Console.WriteLine($"Selected: {selectedTime.Value:hh\\:mm}");
+}
+
+// With initial time and customization
+TimeSpan? time = await TimePickerDialog.ShowAsync(
+    "Meeting Time",
+    "When should the meeting start?",
+    initialTime: new TimeSpan(9, 0, 0),  // 9:00 AM
+    okText: "Set",
+    cancelText: "Cancel",
+    showNowButton: true,
+    showClearButton: false,
+    dialogType: DialogType.None);
+```
+
+### DateTime Picker Dialog (v1.5.0+)
+
+Combined date and time selection with responsive layout (horizontal on mobile, vertical on desktop).
+
+```csharp
+// Basic date/time picker
+DateTime? selectedDateTime = await DateTimePickerDialog.ShowAsync(
+    "Select Date & Time",
+    "Choose when to schedule the event");
+
+if (selectedDateTime.HasValue)
+{
+    Console.WriteLine($"Selected: {selectedDateTime.Value:g}");
+}
+
+// With constraints
+DateTime? dateTime = await DateTimePickerDialog.ShowAsync(
+    "Appointment",
+    "Select appointment date and time",
+    initialDateTime: DateTime.Now.AddHours(1),
+    minDate: DateTime.Today,
+    maxDate: DateTime.Today.AddMonths(6));
+
+// Full customization
+DateTime? dateTime = await DateTimePickerDialog.ShowAsync(
+    "Schedule Meeting",
+    "Choose date and time",
+    initialDateTime: DateTime.Now,
+    minDate: DateTime.Today,
+    maxDate: DateTime.Today.AddYears(1),
+    okText: "Schedule",
+    cancelText: "Cancel",
+    showNowButton: true,
+    showClearButton: true,
+    dialogType: DialogType.Info);
+```
+
+**Date/Time Picker Features:**
+- **Today/Now Buttons**: Quick-select buttons for current date/time
+- **Clear Button**: Optional button to clear the selection
+- **Date Constraints**: Min/max date validation
+- **Responsive Layout**: DateTime picker uses horizontal layout on mobile (Android/iOS) and vertical on desktop (Windows/macOS)
+- **Theme Integration**: Fully themed with all design system presets
+
 ## Notifications
 
 ### Toast
@@ -583,6 +694,43 @@ public enum SnackbarResult
 ## Theming
 
 The library provides comprehensive theming support with automatic dark/light mode detection.
+
+### Design System Presets (v1.5.0+)
+
+Apply popular design system themes with a single line of code:
+
+```csharp
+// Material Design 3
+DialogService.Instance.CurrentThemeOverride = DialogTheme.Material();      // Light
+DialogService.Instance.CurrentThemeOverride = DialogTheme.MaterialDark();  // Dark
+DialogService.Instance.CurrentThemeOverride = DialogTheme.Material(isDark: true);  // Auto
+
+// Microsoft Fluent Design
+DialogService.Instance.CurrentThemeOverride = DialogTheme.Fluent();        // Light
+DialogService.Instance.CurrentThemeOverride = DialogTheme.FluentDark();    // Dark
+DialogService.Instance.CurrentThemeOverride = DialogTheme.Fluent(isDark: true);    // Auto
+
+// Apple Cupertino (iOS/macOS)
+DialogService.Instance.CurrentThemeOverride = DialogTheme.Cupertino();     // Light
+DialogService.Instance.CurrentThemeOverride = DialogTheme.CupertinoDark(); // Dark
+DialogService.Instance.CurrentThemeOverride = DialogTheme.Cupertino(isDark: true); // Auto
+
+// Using the presets class directly
+DialogThemePresets.ApplyPreset(DesignSystem.Material, isDark: false);
+
+// Get theme pair for manual switching
+var (light, dark) = DialogThemePresets.GetThemePair(DesignSystem.Fluent);
+```
+
+**Design System Characteristics:**
+
+| Property | Material 3 | Fluent | Cupertino |
+|----------|-----------|--------|-----------|
+| Corner Radius | 28px (dialog), 20px (button) | 8px (dialog), 4px (button) | 14px (dialog), 10px (button) |
+| Title Font | 24px Bold | 20px Regular | 17px Bold |
+| Animation | 200ms | 167ms | 250ms |
+| Shadow | Yes | Yes | No |
+| Dialog Width | 312px | 340px | 270px |
 
 ### Custom Theme Creation
 
@@ -967,6 +1115,7 @@ public enum DialogType
 | `DialogCornerRadius` | `double` | 12 | Corner radius |
 | `DialogPadding` | `double` | 20 | Internal padding |
 | `ButtonHeight` | `double` | 44 | Button height |
+| `ButtonCornerRadius` | `double` | 8 | Button corner radius |
 | `HasShadow` | `bool` | true | Enable drop shadow |
 | `AnimationDuration` | `int` | 250 | Animation duration (ms) |
 | `EnableAnimation` | `bool` | true | Enable/disable animations |
@@ -1008,6 +1157,29 @@ public enum DialogType
 - **Mopups** (1.3.4+) - Automatically included
 
 ## Migration Guide
+
+### Upgrading from v1.4.x to v1.5.0
+
+No breaking changes. New features are additive:
+
+```csharp
+// NEW: Date/Time Pickers
+DateTime? date = await DatePickerDialog.ShowAsync("Select Date");
+TimeSpan? time = await TimePickerDialog.ShowAsync("Select Time");
+DateTime? dateTime = await DateTimePickerDialog.ShowAsync("Select Date & Time");
+
+// NEW: Design System Presets
+DialogService.Instance.CurrentThemeOverride = DialogTheme.Material();
+DialogService.Instance.CurrentThemeOverride = DialogTheme.Fluent();
+DialogService.Instance.CurrentThemeOverride = DialogTheme.Cupertino();
+
+// NEW: Logging (optional)
+DialogService.Instance.Logger = DebugDialogLogger.Instance;
+
+// NEW: ButtonCornerRadius theme property
+var theme = DialogTheme.LightTheme.Clone();
+theme.ButtonCornerRadius = 20; // Pill-shaped buttons
+```
 
 ### Upgrading from v1.4.0 to v1.4.1
 
@@ -1314,7 +1486,47 @@ SOFTWARE.
 
 ## Changelog
 
-### Version 1.4.1 (Latest)
+### Version 1.5.0 (Latest)
+
+**New Features:**
+- **Date Picker Dialog**: Native date selection with Today button and min/max constraints
+- **Time Picker Dialog**: Native time selection with Now button
+- **DateTime Picker Dialog**: Combined date and time selection with responsive platform-specific layouts
+  - Horizontal layout on Android/iOS (date and time on same row)
+  - Vertical layout on Windows/macOS (stacked)
+- **Design System Presets**: Pre-built themes following popular design systems
+  - `DialogTheme.Material()` / `DialogTheme.MaterialDark()` - Google Material Design 3
+  - `DialogTheme.Fluent()` / `DialogTheme.FluentDark()` - Microsoft Fluent Design
+  - `DialogTheme.Cupertino()` / `DialogTheme.CupertinoDark()` - Apple Human Interface Guidelines
+- **Custom Animation Effects**: Slide, fade, scale, and combined transitions
+  - `DialogAnimationType` enum with None, Fade, Scale, ScaleBounce, SlideUp/Down/Left/Right, FadeScale, SlideFade
+  - `IDialogAnimation` interface for custom animations
+- **Accessibility Improvements**: Enhanced screen reader and automation support
+  - `AccessibilityHelper` for semantic properties, announcements, and WCAG contrast checking
+  - `AccessibilitySettings` for configuring accessibility behavior
+- **Performance Telemetry**: Optional analytics for dialog usage
+  - `IDialogTelemetry` interface for custom telemetry providers
+  - Track dialog open/close events with timing data
+- **Additional Localizations**: Chinese, Japanese, Portuguese, Italian
+  - Now 8 languages total (English, Spanish, French, German, Chinese, Japanese, Portuguese, Italian)
+- **MVVM Command Binding**: ICommand support via `RelayCommand` and `DialogCommands`
+  - Pre-built commands for common dialog actions
+- **Input Validation Framework**: Built-in validators for Prompt/Editor
+  - `ValidationResult` and `ValidationOptions` classes
+  - Real-time, on-submit, and on-blur validation triggers
+  - WCAG-compliant error styling
+- **ButtonCornerRadius Theme Property**: Control button corner radius independently from dialog
+- **IDialogLogger Interface**: Optional logging support for debugging and monitoring
+  - `DebugDialogLogger` for development debugging
+  - `NullDialogLogger` (default) for production
+
+**Production Improvements:**
+- **IDisposable Pattern**: BaseDialog now implements IDisposable with proper event cleanup
+- **Thread-Safe DialogService**: All properties and methods are now synchronized for concurrent access
+- **Exception Handling**: Proper exception logging instead of silent swallowing
+- **Memory Management**: CancellationTokenSource disposal in Toast/Snackbar
+
+### Version 1.4.1
 
 **New Features:**
 - **ActionItem Action Callbacks**: Define `Action` or `AsyncAction` directly on `ActionItem` for automatic invocation
@@ -1394,17 +1606,17 @@ SOFTWARE.
 
 ## Roadmap
 
-Planned features for future releases:
+All planned features have been implemented! 🎉
 
 - [x] **Snackbar/Toast notifications** - Non-blocking notifications ✅ Added in v1.4.0
-- [ ] **Date/Time picker dialogs** - Native date and time selection
-- [ ] **Custom animation effects** - Slide, fade, scale transitions
-- [ ] **Preset theme gallery** - Material, Fluent, Cupertino themes
-- [ ] **Additional localizations** - Chinese, Japanese, Portuguese, Italian
-- [ ] **MVVM command binding** - ICommand support for button actions
-- [ ] **Input validation framework** - Built-in validators for Prompt/Editor
-- [ ] **Accessibility improvements** - Enhanced screen reader support
-- [ ] **Performance telemetry** - Optional analytics for dialog usage
+- [x] **Date/Time picker dialogs** - Native date and time selection ✅ Added in v1.5.0
+- [x] **Preset theme gallery** - Material, Fluent, Cupertino themes ✅ Added in v1.5.0
+- [x] **Custom animation effects** - Slide, fade, scale transitions ✅ Added in v1.5.0
+- [x] **Accessibility improvements** - Enhanced screen reader support ✅ Added in v1.5.0
+- [x] **Performance telemetry** - Optional analytics for dialog usage ✅ Added in v1.5.0
+- [x] **Additional localizations** - Chinese, Japanese, Portuguese, Italian ✅ Added in v1.5.0
+- [x] **MVVM command binding** - ICommand support for button actions ✅ Added in v1.5.0
+- [x] **Input validation framework** - Built-in validators for Prompt/Editor ✅ Added in v1.5.0
 
 ---
 

@@ -278,62 +278,9 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             Grid.SetColumnSpan(separator, 2);
 
             // Row 3: Date and Time pickers with icons
+            // Use horizontal layout on Android/iOS (mobile), vertical on Windows/MacCatalyst (desktop)
             currentRow = 3;
-            var pickersContainer = new Grid
-            {
-                RowDefinitions =
-                {
-                    new RowDefinition(GridLength.Auto),
-                    new RowDefinition(GridLength.Auto)
-                },
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition(GridLength.Star),
-                    new ColumnDefinition(GridLength.Auto),
-                    new ColumnDefinition(GridLength.Auto)
-                },
-                RowSpacing = 10,
-                ColumnSpacing = 5,
-                VerticalOptions = LayoutOptions.Center
-            };
-
-            // Date picker row
-            var dateBorder = new Border
-            {
-                BackgroundColor = theme.IsDarkMode
-                    ? theme.BackgroundColor.AddLuminosity(0.05f)
-                    : theme.BackgroundColor.AddLuminosity(-0.05f),
-                Stroke = theme.BorderColor,
-                StrokeShape = new RoundRectangle { CornerRadius = 8 },
-                Padding = new Thickness(10, 8),
-                Content = _datePicker
-            };
-            pickersContainer.Add(dateBorder, 0, 0);
-
-            if (_nowButton != null)
-            {
-                pickersContainer.Add(_nowButton, 1, 0);
-            }
-
-            if (_clearButton != null)
-            {
-                pickersContainer.Add(_clearButton, 2, 0);
-            }
-
-            // Time picker row
-            var timeBorder = new Border
-            {
-                BackgroundColor = theme.IsDarkMode
-                    ? theme.BackgroundColor.AddLuminosity(0.05f)
-                    : theme.BackgroundColor.AddLuminosity(-0.05f),
-                Stroke = theme.BorderColor,
-                StrokeShape = new RoundRectangle { CornerRadius = 8 },
-                Padding = new Thickness(10, 8),
-                Content = _timePicker
-            };
-            pickersContainer.Add(timeBorder, 0, 1);
-            Grid.SetColumnSpan(timeBorder, 3);
-
+            var pickersContainer = CreatePickersContainer(theme, showNowButton, showClearButton);
             _mainGrid.Add(pickersContainer, 0, currentRow);
             Grid.SetColumnSpan(pickersContainer, 2);
 
@@ -499,6 +446,146 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             {
                 await MopupService.Instance.RemovePageAsync(dialog);
             }
+        }
+
+        /// <summary>
+        /// Creates the pickers container with platform-specific layout
+        /// Mobile (Android/iOS): Horizontal layout with date and time on same row
+        /// Desktop (Windows/MacCatalyst): Vertical layout with date and time stacked
+        /// </summary>
+        private Grid CreatePickersContainer(DialogTheme theme, bool showNowButton, bool showClearButton)
+        {
+#if ANDROID || IOS
+            return CreateHorizontalPickersLayout(theme, showNowButton, showClearButton);
+#else
+            return CreateVerticalPickersLayout(theme, showNowButton, showClearButton);
+#endif
+        }
+
+        /// <summary>
+        /// Creates a horizontal layout for mobile platforms (date and time on same row)
+        /// </summary>
+        private Grid CreateHorizontalPickersLayout(DialogTheme theme, bool showNowButton, bool showClearButton)
+        {
+            var container = new Grid
+            {
+                RowDefinitions =
+                {
+                    new RowDefinition(GridLength.Auto)
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition(GridLength.Star),  // Date picker
+                    new ColumnDefinition(GridLength.Star),  // Time picker
+                    new ColumnDefinition(GridLength.Auto),  // Now button
+                    new ColumnDefinition(GridLength.Auto)   // Clear button
+                },
+                ColumnSpacing = 8,
+                VerticalOptions = LayoutOptions.Center
+            };
+
+            // Date picker
+            var dateBorder = new Border
+            {
+                BackgroundColor = theme.IsDarkMode
+                    ? theme.BackgroundColor.AddLuminosity(0.05f)
+                    : theme.BackgroundColor.AddLuminosity(-0.05f),
+                Stroke = theme.BorderColor,
+                StrokeShape = new RoundRectangle { CornerRadius = 8 },
+                Padding = new Thickness(8, 6),
+                Content = _datePicker
+            };
+            container.Add(dateBorder, 0, 0);
+
+            // Time picker
+            var timeBorder = new Border
+            {
+                BackgroundColor = theme.IsDarkMode
+                    ? theme.BackgroundColor.AddLuminosity(0.05f)
+                    : theme.BackgroundColor.AddLuminosity(-0.05f),
+                Stroke = theme.BorderColor,
+                StrokeShape = new RoundRectangle { CornerRadius = 8 },
+                Padding = new Thickness(8, 6),
+                Content = _timePicker
+            };
+            container.Add(timeBorder, 1, 0);
+
+            // Now button
+            if (_nowButton != null && showNowButton)
+            {
+                container.Add(_nowButton, 2, 0);
+            }
+
+            // Clear button
+            if (_clearButton != null && showClearButton)
+            {
+                container.Add(_clearButton, 3, 0);
+            }
+
+            return container;
+        }
+
+        /// <summary>
+        /// Creates a vertical layout for desktop platforms (date and time stacked)
+        /// </summary>
+        private Grid CreateVerticalPickersLayout(DialogTheme theme, bool showNowButton, bool showClearButton)
+        {
+            var container = new Grid
+            {
+                RowDefinitions =
+                {
+                    new RowDefinition(GridLength.Auto),
+                    new RowDefinition(GridLength.Auto)
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition(GridLength.Star),
+                    new ColumnDefinition(GridLength.Auto),
+                    new ColumnDefinition(GridLength.Auto)
+                },
+                RowSpacing = 10,
+                ColumnSpacing = 5,
+                VerticalOptions = LayoutOptions.Center
+            };
+
+            // Date picker row
+            var dateBorder = new Border
+            {
+                BackgroundColor = theme.IsDarkMode
+                    ? theme.BackgroundColor.AddLuminosity(0.05f)
+                    : theme.BackgroundColor.AddLuminosity(-0.05f),
+                Stroke = theme.BorderColor,
+                StrokeShape = new RoundRectangle { CornerRadius = 8 },
+                Padding = new Thickness(10, 8),
+                Content = _datePicker
+            };
+            container.Add(dateBorder, 0, 0);
+
+            if (_nowButton != null && showNowButton)
+            {
+                container.Add(_nowButton, 1, 0);
+            }
+
+            if (_clearButton != null && showClearButton)
+            {
+                container.Add(_clearButton, 2, 0);
+            }
+
+            // Time picker row
+            var timeBorder = new Border
+            {
+                BackgroundColor = theme.IsDarkMode
+                    ? theme.BackgroundColor.AddLuminosity(0.05f)
+                    : theme.BackgroundColor.AddLuminosity(-0.05f),
+                Stroke = theme.BorderColor,
+                StrokeShape = new RoundRectangle { CornerRadius = 8 },
+                Padding = new Thickness(10, 8),
+                Content = _timePicker
+            };
+            container.Add(timeBorder, 0, 1);
+            Grid.SetColumnSpan(timeBorder, 3);
+
+            return container;
         }
     }
 }

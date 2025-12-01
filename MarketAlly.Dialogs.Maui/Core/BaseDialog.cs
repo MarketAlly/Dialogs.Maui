@@ -7,13 +7,16 @@ using System.IO;
 namespace MarketAlly.Dialogs.Maui.Core
 {
     /// <summary>
-    /// Base class for all dialog implementations
+    /// Base class for all dialog implementations with proper resource cleanup
     /// </summary>
-    public abstract class BaseDialog : PopupPage
+    public abstract class BaseDialog : PopupPage, IDisposable
     {
         protected DialogService DialogService => DialogService.Instance;
         protected DialogTheme CurrentTheme => DialogService.CurrentTheme;
         protected DialogType DialogType { get; set; }
+
+        private bool _disposed;
+        private readonly List<(Button button, EventHandler handler)> _buttonHandlers = new();
 
         /// <summary>
         /// Gets or sets custom icon sources
@@ -252,6 +255,7 @@ namespace MarketAlly.Dialogs.Maui.Core
             };
 
             button.Clicked += clickHandler;
+            _buttonHandlers.Add((button, clickHandler));
             return button;
         }
 
@@ -277,6 +281,7 @@ namespace MarketAlly.Dialogs.Maui.Core
             };
 
             button.Clicked += clickHandler;
+            _buttonHandlers.Add((button, clickHandler));
             return button;
         }
 
@@ -293,6 +298,55 @@ namespace MarketAlly.Dialogs.Maui.Core
                 HeightRequest = 1,
                 Margin = new Thickness(20, 0)
             };
+        }
+
+        /// <summary>
+        /// Disposes of the dialog and unsubscribes from all events
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Protected implementation of Dispose pattern
+        /// </summary>
+        /// <param name="disposing">True if called from Dispose(), false if from finalizer</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                // Unsubscribe from page events
+                Appearing -= OnDialogAppearing;
+
+                // Unsubscribe all button click handlers
+                foreach (var (button, handler) in _buttonHandlers)
+                {
+                    button.Clicked -= handler;
+                }
+                _buttonHandlers.Clear();
+
+                // Allow derived classes to perform additional cleanup
+                OnDisposing();
+            }
+
+            _disposed = true;
+        }
+
+        /// <summary>
+        /// Override in derived classes to perform additional cleanup
+        /// </summary>
+        protected virtual void OnDisposing()
+        {
+        }
+
+        ~BaseDialog()
+        {
+            Dispose(false);
         }
     }
 }

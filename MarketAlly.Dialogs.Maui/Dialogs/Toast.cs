@@ -368,6 +368,8 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             _isDisposed = true;
 
             _autoDismissCts?.Cancel();
+            _autoDismissCts?.Dispose();
+            _autoDismissCts = null;
 
             lock (_lock)
             {
@@ -382,9 +384,9 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                     await MopupService.Instance.RemovePageAsync(this, animate: true);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore errors during dismissal
+                DialogService.Instance.LogError("Error dismissing toast", ex);
             }
         }
 
@@ -410,8 +412,14 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                             if (oldest != null)
                             {
                                 _activeToasts.RemoveAt(0);
-                                // Dismiss async without blocking
-                                _ = oldest.DismissInternalAsync();
+                                // Dismiss async without blocking, but handle errors properly
+                                _ = oldest.DismissInternalAsync().ContinueWith(t =>
+                                {
+                                    if (t.IsFaulted && t.Exception != null)
+                                    {
+                                        DialogService.Instance.LogError("Error dismissing toast", t.Exception.InnerException ?? t.Exception);
+                                    }
+                                }, TaskScheduler.Default);
                             }
                         }
                         return;
@@ -430,6 +438,8 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             _isDisposed = true;
 
             _autoDismissCts?.Cancel();
+            _autoDismissCts?.Dispose();
+            _autoDismissCts = null;
 
             try
             {
@@ -438,9 +448,9 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                     await MopupService.Instance.RemovePageAsync(this, animate: true);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore errors during dismissal
+                DialogService.Instance.LogError("Error in internal toast dismissal", ex);
             }
         }
 

@@ -12,6 +12,9 @@ Complete API documentation for all public classes, methods, properties, and enum
   - [LoadingDialog](#loadingdialog)
   - [ActionListDialog](#actionlistdialog)
   - [ColorPickerDialog](#colorpickerdialog)
+  - [DatePickerDialog](#datepickerdialog) (v1.5.0+)
+  - [TimePickerDialog](#timepickerdialog) (v1.5.0+)
+  - [DateTimePickerDialog](#datetimepickerdialog) (v1.5.0+)
 - [Notifications](#notifications)
   - [Toast](#toast)
   - [Snackbar](#snackbar)
@@ -20,8 +23,12 @@ Complete API documentation for all public classes, methods, properties, and enum
   - [BaseDialog](#basedialog)
 - [Models](#models)
   - [DialogTheme](#dialogtheme)
+  - [DialogThemePresets](#dialogthemepresets) (v1.5.0+)
   - [DialogType](#dialogtype)
   - [ActionItem](#actionitem)
+- [Interfaces](#interfaces)
+  - [IDialogLocalization](#idialoglocalization)
+  - [IDialogLogger](#idialoglogger) (v1.5.0+)
 - [Enumerations](#enumerations)
   - [ToastPosition](#toastposition)
   - [ToastHorizontalPosition](#toasthorizontalposition)
@@ -914,6 +921,366 @@ Color? customColor = await ColorPickerDialog.ShowAsync(
 
 ---
 
+### DatePickerDialog
+
+Displays a dialog for selecting a date with optional constraints.
+
+**Namespace:** `MarketAlly.Dialogs.Maui.Dialogs`
+
+**Inheritance:** `BaseDialog` → `PopupPage`
+
+**Available since:** v1.5.0
+
+#### Constructors
+
+```csharp
+public DatePickerDialog(
+    string title,
+    string? description = null,
+    DateTime? initialDate = null,
+    DateTime? minDate = null,
+    DateTime? maxDate = null,
+    string? okText = null,
+    string? cancelText = null,
+    bool showTodayButton = true,
+    bool showClearButton = false,
+    DialogType dialogType = DialogType.None)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `title` | `string` | The dialog title |
+| `description` | `string?` | Optional description text |
+| `initialDate` | `DateTime?` | Initially selected date (default: today) |
+| `minDate` | `DateTime?` | Minimum selectable date |
+| `maxDate` | `DateTime?` | Maximum selectable date |
+| `okText` | `string?` | Custom OK button text |
+| `cancelText` | `string?` | Custom cancel button text |
+| `showTodayButton` | `bool` | Show Today quick-select button (default: true) |
+| `showClearButton` | `bool` | Show Clear button (default: false) |
+| `dialogType` | `DialogType` | Icon type to display |
+
+#### Static Methods
+
+```csharp
+public static Task<DateTime?> ShowAsync(
+    string title,
+    string? description = null,
+    DateTime? initialDate = null)
+```
+Shows a basic date picker. Returns selected `DateTime` or `null` if cancelled.
+
+```csharp
+public static Task<DateTime?> ShowAsync(
+    string title,
+    string? description,
+    DateTime? initialDate,
+    DateTime? minDate,
+    DateTime? maxDate)
+```
+Shows a date picker with date constraints.
+
+```csharp
+public static Task<DateTime?> ShowAsync(
+    string title,
+    string? description,
+    DateTime? initialDate,
+    DateTime? minDate,
+    DateTime? maxDate,
+    string? okText,
+    string? cancelText,
+    bool showTodayButton = true,
+    bool showClearButton = false,
+    DialogType dialogType = DialogType.None)
+```
+Shows a date picker with full customization.
+
+```csharp
+public static Task HideAsync()
+```
+Hides the currently displayed date picker dialog.
+
+#### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `SelectedDate` | `DateTime?` | Gets or sets the selected date |
+| `MinimumDate` | `DateTime` | Gets or sets minimum selectable date |
+| `MaximumDate` | `DateTime` | Gets or sets maximum selectable date |
+| `ShowTodayButton` | `bool` | Gets or sets Today button visibility |
+| `ShowClearButton` | `bool` | Gets or sets Clear button visibility |
+
+#### Examples
+
+```csharp
+// Basic date picker
+DateTime? date = await DatePickerDialog.ShowAsync(
+    "Select Date",
+    "Choose a date for the appointment");
+
+// With constraints
+DateTime? date = await DatePickerDialog.ShowAsync(
+    "Delivery Date",
+    "Select a date within the next 2 weeks",
+    DateTime.Today,
+    DateTime.Today,
+    DateTime.Today.AddDays(14));
+
+// Full customization
+var dialog = new DatePickerDialog(
+    "Event Date",
+    "When should the event take place?",
+    DateTime.Today.AddDays(7),
+    DateTime.Today,
+    DateTime.Today.AddYears(1),
+    "Confirm",
+    "Cancel",
+    showTodayButton: true,
+    showClearButton: true,
+    DialogType.Info);
+
+DateTime? result = await dialog.ShowAsync();
+```
+
+---
+
+### TimePickerDialog
+
+Displays a dialog for selecting a time.
+
+**Namespace:** `MarketAlly.Dialogs.Maui.Dialogs`
+
+**Inheritance:** `BaseDialog` → `PopupPage`
+
+**Available since:** v1.5.0
+
+#### Constructors
+
+```csharp
+public TimePickerDialog(
+    string title,
+    string? description = null,
+    TimeSpan? initialTime = null,
+    string? okText = null,
+    string? cancelText = null,
+    bool showNowButton = true,
+    bool showClearButton = false,
+    DialogType dialogType = DialogType.None)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `title` | `string` | The dialog title |
+| `description` | `string?` | Optional description text |
+| `initialTime` | `TimeSpan?` | Initially selected time (default: current time) |
+| `okText` | `string?` | Custom OK button text |
+| `cancelText` | `string?` | Custom cancel button text |
+| `showNowButton` | `bool` | Show Now quick-select button (default: true) |
+| `showClearButton` | `bool` | Show Clear button (default: false) |
+| `dialogType` | `DialogType` | Icon type to display |
+
+#### Static Methods
+
+```csharp
+public static Task<TimeSpan?> ShowAsync(
+    string title,
+    string? description = null,
+    TimeSpan? initialTime = null)
+```
+Shows a basic time picker. Returns selected `TimeSpan` or `null` if cancelled.
+
+```csharp
+public static Task<TimeSpan?> ShowAsync(
+    string title,
+    string? description,
+    TimeSpan? initialTime,
+    string? okText,
+    string? cancelText,
+    bool showNowButton = true,
+    bool showClearButton = false,
+    DialogType dialogType = DialogType.None)
+```
+Shows a time picker with full customization.
+
+```csharp
+public static Task HideAsync()
+```
+Hides the currently displayed time picker dialog.
+
+#### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `SelectedTime` | `TimeSpan?` | Gets or sets the selected time |
+| `ShowNowButton` | `bool` | Gets or sets Now button visibility |
+| `ShowClearButton` | `bool` | Gets or sets Clear button visibility |
+
+#### Examples
+
+```csharp
+// Basic time picker
+TimeSpan? time = await TimePickerDialog.ShowAsync(
+    "Select Time",
+    "Choose a reminder time");
+
+// With initial time
+TimeSpan? time = await TimePickerDialog.ShowAsync(
+    "Meeting Time",
+    "When should the meeting start?",
+    new TimeSpan(14, 30, 0));  // 2:30 PM
+
+// Full customization
+var dialog = new TimePickerDialog(
+    "Alarm Time",
+    "Set your wake-up time",
+    new TimeSpan(7, 0, 0),  // 7:00 AM
+    "Set Alarm",
+    "Cancel",
+    showNowButton: true,
+    showClearButton: false,
+    DialogType.Info);
+
+TimeSpan? result = await dialog.ShowAsync();
+```
+
+---
+
+### DateTimePickerDialog
+
+Displays a dialog for selecting both date and time with responsive platform-specific layout.
+
+**Namespace:** `MarketAlly.Dialogs.Maui.Dialogs`
+
+**Inheritance:** `BaseDialog` → `PopupPage`
+
+**Available since:** v1.5.0
+
+**Platform Behavior:**
+- **Android/iOS**: Horizontal layout with date and time on the same row
+- **Windows/macOS**: Vertical layout with date and time stacked
+
+#### Constructors
+
+```csharp
+public DateTimePickerDialog(
+    string title,
+    string? description = null,
+    DateTime? initialDateTime = null,
+    DateTime? minDate = null,
+    DateTime? maxDate = null,
+    string? okText = null,
+    string? cancelText = null,
+    bool showNowButton = true,
+    bool showClearButton = false,
+    DialogType dialogType = DialogType.None)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `title` | `string` | The dialog title |
+| `description` | `string?` | Optional description text |
+| `initialDateTime` | `DateTime?` | Initially selected date/time (default: now) |
+| `minDate` | `DateTime?` | Minimum selectable date |
+| `maxDate` | `DateTime?` | Maximum selectable date |
+| `okText` | `string?` | Custom OK button text |
+| `cancelText` | `string?` | Custom cancel button text |
+| `showNowButton` | `bool` | Show Now quick-select button (default: true) |
+| `showClearButton` | `bool` | Show Clear button (default: false) |
+| `dialogType` | `DialogType` | Icon type to display |
+
+#### Static Methods
+
+```csharp
+public static Task<DateTime?> ShowAsync(
+    string title,
+    string? description = null,
+    DateTime? initialDateTime = null)
+```
+Shows a basic date/time picker. Returns selected `DateTime` or `null` if cancelled.
+
+```csharp
+public static Task<DateTime?> ShowAsync(
+    string title,
+    string? description,
+    DateTime? initialDateTime,
+    DateTime? minDate,
+    DateTime? maxDate)
+```
+Shows a date/time picker with date constraints.
+
+```csharp
+public static Task<DateTime?> ShowAsync(
+    string title,
+    string? description,
+    DateTime? initialDateTime,
+    DateTime? minDate,
+    DateTime? maxDate,
+    string? okText,
+    string? cancelText,
+    bool showNowButton = true,
+    bool showClearButton = false,
+    DialogType dialogType = DialogType.None)
+```
+Shows a date/time picker with full customization.
+
+```csharp
+public static Task HideAsync()
+```
+Hides the currently displayed date/time picker dialog.
+
+#### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `SelectedDateTime` | `DateTime?` | Gets or sets the combined date and time |
+| `SelectedDate` | `DateTime?` | Gets or sets just the date portion |
+| `SelectedTime` | `TimeSpan?` | Gets or sets just the time portion |
+| `MinimumDate` | `DateTime` | Gets or sets minimum selectable date |
+| `MaximumDate` | `DateTime` | Gets or sets maximum selectable date |
+| `ShowNowButton` | `bool` | Gets or sets Now button visibility |
+| `ShowClearButton` | `bool` | Gets or sets Clear button visibility |
+
+#### Examples
+
+```csharp
+// Basic date/time picker
+DateTime? dateTime = await DateTimePickerDialog.ShowAsync(
+    "Select Date & Time",
+    "When should the event start?");
+
+// With constraints
+DateTime? dateTime = await DateTimePickerDialog.ShowAsync(
+    "Appointment",
+    "Select appointment date and time",
+    DateTime.Now.AddHours(1),
+    DateTime.Today,
+    DateTime.Today.AddMonths(3));
+
+// Full customization
+var dialog = new DateTimePickerDialog(
+    "Schedule Meeting",
+    "Choose the meeting date and time",
+    DateTime.Now.AddDays(1),
+    DateTime.Today,
+    DateTime.Today.AddYears(1),
+    "Schedule",
+    "Cancel",
+    showNowButton: true,
+    showClearButton: true,
+    DialogType.Info);
+
+DateTime? result = await dialog.ShowAsync();
+
+// Access individual components
+if (result.HasValue)
+{
+    var date = dialog.SelectedDate;
+    var time = dialog.SelectedTime;
+}
+```
+
+---
+
 ## Notifications
 
 ### Toast
@@ -1254,6 +1621,7 @@ Singleton service for managing themes, localization, and global dialog settings.
 | `CurrentThemeOverride` | `DialogTheme?` | Manual theme override (null = auto) |
 | `UseSystemTheme` | `bool` | Whether to follow system theme (default: true) |
 | `Localization` | `IDialogLocalization` | Current localization provider |
+| `Logger` | `IDialogLogger` | Logger for dialog events and errors (v1.5.0+) |
 | `CustomIcons` | `Dictionary<DialogType, DialogIconMapping>` | Custom icon mappings |
 
 #### Methods
@@ -1352,6 +1720,8 @@ Abstract base class for all dialogs providing theming and helper methods.
 **Namespace:** `MarketAlly.Dialogs.Maui.Core`
 
 **Inheritance:** `PopupPage`
+
+**Implements:** `IDisposable` (v1.5.0+)
 
 #### Properties
 
@@ -1546,6 +1916,7 @@ Complete theme configuration for dialogs.
 | `DialogCornerRadius` | `double` | `8` | Corner radius |
 | `DialogPadding` | `double` | `20` | Internal padding |
 | `ButtonHeight` | `double` | `44` | Button height |
+| `ButtonCornerRadius` | `double` | `8` | Button corner radius (v1.5.0+) |
 
 ##### Animation
 
@@ -1604,6 +1975,100 @@ await AlertDialog.ShowAsync(
     "Welcome",
     "This is <b>bold</b> and <i>italic</i> text.",
     DialogType.Info);
+```
+
+---
+
+### DialogThemePresets
+
+Static class providing pre-built themes following popular design systems.
+
+**Namespace:** `MarketAlly.Dialogs.Maui.Models`
+
+**Available since:** v1.5.0
+
+#### Static Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `MaterialLight` | `DialogTheme` | Material Design 3 light theme |
+| `MaterialDark` | `DialogTheme` | Material Design 3 dark theme |
+| `FluentLight` | `DialogTheme` | Microsoft Fluent Design light theme |
+| `FluentDark` | `DialogTheme` | Microsoft Fluent Design dark theme |
+| `CupertinoLight` | `DialogTheme` | Apple Cupertino light theme |
+| `CupertinoDark` | `DialogTheme` | Apple Cupertino dark theme |
+
+#### Static Methods
+
+```csharp
+public static (DialogTheme Light, DialogTheme Dark) GetThemePair(DesignSystem system)
+```
+Gets both light and dark themes for a design system.
+
+```csharp
+public static DialogTheme GetTheme(DesignSystem system, bool isDark)
+```
+Gets a specific theme variant for a design system.
+
+```csharp
+public static void ApplyPreset(DesignSystem system, bool isDark = false)
+```
+Applies a preset theme to the DialogService.
+
+#### Design System Characteristics
+
+| Property | Material 3 | Fluent | Cupertino |
+|----------|-----------|--------|-----------|
+| `DialogCornerRadius` | 28 | 8 | 14 |
+| `ButtonCornerRadius` | 20 | 4 | 10 |
+| `TitleFontSize` | 24 | 20 | 17 |
+| `TitleFontAttributes` | Bold | None | Bold |
+| `AnimationDuration` | 200ms | 167ms | 250ms |
+| `HasShadow` | true | true | false |
+| `DialogWidth` | 312 | 340 | 270 |
+
+#### Examples
+
+```csharp
+// Apply Material Design
+DialogService.Instance.CurrentThemeOverride = DialogThemePresets.MaterialLight;
+
+// Apply Fluent Design (dark)
+DialogService.Instance.CurrentThemeOverride = DialogThemePresets.FluentDark;
+
+// Apply Cupertino
+DialogService.Instance.CurrentThemeOverride = DialogThemePresets.CupertinoLight;
+
+// Get theme pair for switching
+var (light, dark) = DialogThemePresets.GetThemePair(DesignSystem.Material);
+
+// Apply preset directly
+DialogThemePresets.ApplyPreset(DesignSystem.Fluent, isDark: true);
+
+// Use factory methods on DialogTheme
+DialogService.Instance.CurrentThemeOverride = DialogTheme.Material();
+DialogService.Instance.CurrentThemeOverride = DialogTheme.Fluent(isDark: true);
+DialogService.Instance.CurrentThemeOverride = DialogTheme.CupertinoDark();
+```
+
+---
+
+### DesignSystem
+
+Enumeration of available design systems for preset themes.
+
+**Namespace:** `MarketAlly.Dialogs.Maui.Models`
+
+**Available since:** v1.5.0
+
+```csharp
+public enum DesignSystem
+{
+    Default,    // Default library theme
+    Material,   // Google Material Design 3
+    Fluent,     // Microsoft Fluent Design System
+    Cupertino   // Apple Human Interface Guidelines
+}
 ```
 
 ---
@@ -1955,6 +2420,72 @@ DialogService.Instance.SetLocalization(new JapaneseLocalization());
 
 ---
 
+### IDialogLogger
+
+Interface for logging dialog-related events and errors.
+
+**Namespace:** `MarketAlly.Dialogs.Maui.Interfaces`
+
+**Available since:** v1.5.0
+
+#### Methods
+
+```csharp
+void Debug(string message)
+```
+Logs a debug message.
+
+```csharp
+void Info(string message)
+```
+Logs an informational message.
+
+```csharp
+void Warning(string message)
+```
+Logs a warning message.
+
+```csharp
+void Error(string message)
+```
+Logs an error message.
+
+```csharp
+void Error(string message, Exception exception)
+```
+Logs an error message with an exception.
+
+#### Built-in Implementations
+
+| Class | Description |
+|-------|-------------|
+| `NullDialogLogger` | No-op logger (default) - does nothing |
+| `DebugDialogLogger` | Writes to `System.Diagnostics.Debug` |
+
+#### Examples
+
+```csharp
+// Use debug logger during development
+DialogService.Instance.Logger = DebugDialogLogger.Instance;
+
+// Use null logger in production (default)
+DialogService.Instance.Logger = NullDialogLogger.Instance;
+
+// Custom logger implementation
+public class AppCenterLogger : IDialogLogger
+{
+    public void Debug(string message) => Analytics.TrackEvent("Dialog_Debug", new Dictionary<string, string> { ["message"] = message });
+    public void Info(string message) => Analytics.TrackEvent("Dialog_Info", new Dictionary<string, string> { ["message"] = message });
+    public void Warning(string message) => Analytics.TrackEvent("Dialog_Warning", new Dictionary<string, string> { ["message"] = message });
+    public void Error(string message) => Crashes.TrackError(new Exception(message));
+    public void Error(string message, Exception ex) => Crashes.TrackError(ex, new Dictionary<string, string> { ["message"] = message });
+}
+
+DialogService.Instance.Logger = new AppCenterLogger();
+```
+
+---
+
 ## Localization
 
 ### DefaultDialogLocalization
@@ -2007,6 +2538,7 @@ DialogService.Instance.SetLocalization(french);
 
 | Version | Changes |
 |---------|---------|
+| 1.5.0 | Added DatePickerDialog, TimePickerDialog, DateTimePickerDialog, DialogThemePresets (Material/Fluent/Cupertino), IDialogLogger, ButtonCornerRadius, IDisposable pattern, thread-safe DialogService |
 | 1.4.1 | Added ActionItem Action/AsyncAction callbacks, ShowWithActionsAsync, Toast horizontal positioning |
 | 1.4.0 | Added Toast and Snackbar notifications |
 | 1.3.0 | Added hierarchical menus, fixed duplicate key bug |
@@ -2016,4 +2548,4 @@ DialogService.Instance.SetLocalization(french);
 
 ---
 
-*Generated for MarketAlly.Dialogs.Maui v1.4.1*
+*Generated for MarketAlly.Dialogs.Maui v1.5.0*
