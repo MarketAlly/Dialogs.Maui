@@ -34,6 +34,9 @@ namespace MarketAlly.Dialogs.Maui.Localization
         public virtual string AlphaLabel => GetString("alpha_label");
         public virtual string PresetColorsLabel => GetString("preset_colors_label");
         public virtual string ItemsScrollIndicator => GetString("items_scroll_indicator");
+        public virtual string DismissText => GetString("action_dismiss");
+        public virtual string UndoText => GetString("action_undo");
+        public virtual string RetryText => GetString("action_retry");
 
         public virtual string GetString(string key)
         {
@@ -80,7 +83,12 @@ namespace MarketAlly.Dialogs.Maui.Localization
                 ["color_yellow"] = "Yellow",
                 ["color_black"] = "Black",
                 ["color_white"] = "White",
-                ["color_gray"] = "Gray"
+                ["color_gray"] = "Gray",
+                ["action_dismiss"] = "DISMISS",
+                ["action_undo"] = "UNDO",
+                ["action_retry"] = "RETRY",
+                ["action_view"] = "VIEW",
+                ["action_open"] = "OPEN"
             };
 
             // Override with culture-specific strings if needed
@@ -115,6 +123,11 @@ namespace MarketAlly.Dialogs.Maui.Localization
                     strings["color_green"] = "Verde";
                     strings["color_orange"] = "Naranja";
                     strings["color_purple"] = "Púrpura";
+                    strings["action_dismiss"] = "CERRAR";
+                    strings["action_undo"] = "DESHACER";
+                    strings["action_retry"] = "REINTENTAR";
+                    strings["action_view"] = "VER";
+                    strings["action_open"] = "ABRIR";
                     break;
 
                 case "fr": // French
@@ -144,6 +157,11 @@ namespace MarketAlly.Dialogs.Maui.Localization
                     strings["color_green"] = "Vert";
                     strings["color_orange"] = "Orange";
                     strings["color_purple"] = "Violet";
+                    strings["action_dismiss"] = "FERMER";
+                    strings["action_undo"] = "ANNULER";
+                    strings["action_retry"] = "RÉESSAYER";
+                    strings["action_view"] = "VOIR";
+                    strings["action_open"] = "OUVRIR";
                     break;
 
                 case "de": // German
@@ -173,6 +191,11 @@ namespace MarketAlly.Dialogs.Maui.Localization
                     strings["color_green"] = "Grün";
                     strings["color_orange"] = "Orange";
                     strings["color_purple"] = "Lila";
+                    strings["action_dismiss"] = "SCHLIEßEN";
+                    strings["action_undo"] = "RÜCKGÄNGIG";
+                    strings["action_retry"] = "WIEDERHOLEN";
+                    strings["action_view"] = "ANSEHEN";
+                    strings["action_open"] = "ÖFFNEN";
                     break;
             }
 

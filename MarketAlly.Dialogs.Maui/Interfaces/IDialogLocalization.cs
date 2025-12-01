@@ -71,6 +71,21 @@ namespace MarketAlly.Dialogs.Maui.Interfaces
         string ItemsScrollIndicator { get; }
 
         /// <summary>
+        /// Gets the localized text for the Dismiss action
+        /// </summary>
+        string DismissText { get; }
+
+        /// <summary>
+        /// Gets the localized text for the Undo action
+        /// </summary>
+        string UndoText { get; }
+
+        /// <summary>
+        /// Gets the localized text for the Retry action
+        /// </summary>
+        string RetryText { get; }
+
+        /// <summary>
         /// Gets a localized string by key
         /// </summary>
         /// <param name="key">The localization key</param>

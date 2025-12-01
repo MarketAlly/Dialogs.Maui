@@ -30,19 +30,41 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>MarketAlly.Dialogs.Maui</PackageId>
     <Title>MarketAlly Dialogs for .NET MAUI</Title>
-    <Version>1.3.0</Version>
+    <Version>1.4.0</Version>
     <Authors>David H Friedel Jr</Authors>
     <Company>MarketAlly</Company>
-    <Description>A comprehensive, production-ready dialog library for .NET MAUI applications featuring 7 dialog types (Alert, Confirm, Prompt, Editor, Loading, ActionList, ColorPicker), built-in theming with dark/light mode support, internationalization (English, Spanish, French, German), custom icons, and extensive customization options. Supports iOS, Android, Windows, and macOS.</Description>
+    <Description>A comprehensive, production-ready dialog library for .NET MAUI applications featuring 9 dialog types (Alert, Confirm, Prompt, Editor, Loading, ActionList, ColorPicker, Toast, Snackbar), built-in theming with dark/light mode support, internationalization (English, Spanish, French, German), custom icons, and extensive customization options. Supports iOS, Android, Windows, and macOS.</Description>
     <Copyright>Copyright © MarketAlly 2025</Copyright>
 		<PackageIcon>icon.png</PackageIcon>
-    <PackageTags>maui;dialog;popup;modal;alert;confirm;prompt;loading;actionlist;colorpicker;theme;dark-mode;localization;i18n;mopups;ios;android;windows;macos;ui;controls</PackageTags>
-    <PackageProjectUrl>https://github.com/MarketAlly/MarketAlly.Dialogs.Maui</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/MarketAlly/MarketAlly.Dialogs.Maui</RepositoryUrl>
+    <PackageTags>maui;dialog;popup;modal;alert;confirm;prompt;loading;actionlist;colorpicker;toast;snackbar;notification;theme;dark-mode;localization;i18n;mopups;ios;android;windows;macos;ui;controls</PackageTags>
+    <PackageProjectUrl>https://github.com/MarketAlly/Dialogs.Maui</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MarketAlly/Dialogs.Maui</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+Version 1.4.0 - Toast &amp; Snackbar Notifications:
+
+NEW FEATURES:
+• Toast Notifications: Lightweight, non-interactive notifications for quick status updates
+  - Configurable position (Top/Bottom) and duration (Short 2s, Long 3.5s, or custom)
+  - Optional icons using existing DialogType
+  - Configurable stacking behavior (Stack, Replace, Queue)
+• Snackbar Notifications: Actionable notifications with optional buttons
+  - Action button with callback support (UNDO, RETRY, VIEW, etc.)
+  - Short (4s), Long (7s), or Indefinite duration options
+  - Swipe-to-dismiss support
+  - Returns SnackbarResult (ActionClicked, Dismissed, TimedOut)
+• New Localization Strings: Added DISMISS, UNDO, RETRY translations for EN, ES, FR, DE
+
+IMPROVEMENTS:
+• Non-blocking notifications allow continued user interaction
+• Multiple notifications can stack vertically with configurable max count
+• Consistent theming with existing dialog components
+
+BREAKING CHANGES:
+• None - fully backward compatible with v1.3.0
+
 Version 1.3.0 - Hierarchical Menus &amp; Critical Bug Fix:
 
 NEW FEATURES:

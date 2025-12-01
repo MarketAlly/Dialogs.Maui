@@ -1,24 +1,52 @@
 # MarketAlly.Dialogs.Maui
 
 [![NuGet Version](https://img.shields.io/nuget/v/MarketAlly.Dialogs.Maui.svg?style=flat)](https://www.nuget.org/packages/MarketAlly.Dialogs.Maui/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/MarketAlly.Dialogs.Maui.svg)](https://www.nuget.org/packages/MarketAlly.Dialogs.Maui/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download)
 [![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android%20%7C%20Windows%20%7C%20macOS-lightgray)](https://dotnet.microsoft.com/apps/maui)
 
-A comprehensive, production-ready dialog library for .NET MAUI applications with built-in theming, localization, and extensive customization options.
+A comprehensive, production-ready dialog library for .NET MAUI applications with built-in theming, localization, hierarchical menus, and extensive customization options.
 
-## 🎯 Features
+## Table of Contents
 
-- **🎨 Rich Dialog Collection**: Alert, Confirm, Prompt, Editor, Loading, Action List, and Color Picker dialogs
-- **🌓 Adaptive Theming**: Automatic dark/light theme detection with full customization
-- **🌍 Internationalization**: Built-in support for English, Spanish, French, and German with extensible localization framework
-- **🎭 Custom Icons**: Support for custom icons with platform-specific optimizations
-- **📱 Cross-Platform**: Consistent experience across iOS, Android, Windows, and macOS
-- **⚡ Performance Optimized**: Efficient resource handling and platform-specific rendering
-- **♿ Accessibility Ready**: Full support for screen readers and accessibility features
-- **🔒 Type-Safe**: Strongly typed APIs with comprehensive IntelliSense support
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Dialog Types](#dialog-types)
+- [Notifications](#notifications)
+- [Theming](#theming)
+- [Localization](#localization)
+- [Advanced Features](#advanced-features)
+- [API Reference](#api-reference)
+- [Requirements](#requirements)
+- [Migration Guide](#migration-guide)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
 
-## 📦 Installation
+## Features
+
+### Core Capabilities
+
+- **9 Dialog Types**: Alert, Confirm, Prompt, Editor, Loading, Action List, Color Picker, Toast, and Snackbar
+- **Toast & Snackbar**: Lightweight notifications with optional actions and stacking (v1.4.0+)
+- **Hierarchical Menus**: Multi-level action list navigation with automatic back navigation (v1.3.0+)
+- **Adaptive Theming**: Automatic dark/light theme detection with full customization
+- **Internationalization**: Built-in support for English, Spanish, French, and German
+- **HTML Description Support**: Rich text formatting in dialog descriptions
+- **Cross-Platform**: iOS 11.0+, Android API 21+, Windows 10 (17763+), macOS 10.15+
+
+### Technical Highlights
+
+- **Type-Safe APIs**: Strongly typed with comprehensive IntelliSense support
+- **Async/Await Pattern**: Modern asynchronous dialog handling
+- **Memory Efficient**: Intelligent image caching and resource management
+- **Extensible Architecture**: Easy to create custom dialogs via `BaseDialog`
+- **Thread-Safe**: Singleton service pattern with proper synchronization
+- **Symbol Package Support**: Full debugging support with `.snupkg` packages
+
+## Installation
 
 Install via NuGet Package Manager:
 
@@ -32,7 +60,9 @@ Or via Package Manager Console:
 Install-Package MarketAlly.Dialogs.Maui
 ```
 
-## 🚀 Quick Start
+Or search for `MarketAlly.Dialogs.Maui` in the NuGet Package Manager UI.
+
+## Quick Start
 
 ### 1. Configure in MauiProgram.cs
 
@@ -80,9 +110,10 @@ using MarketAlly.Dialogs.Maui.Dialogs;
 await AlertDialog.ShowAsync("Welcome!", "Thanks for using our dialogs", DialogType.Success);
 ```
 
-## 📖 Dialog Types
+## Dialog Types
 
 ### Alert Dialog
+
 Display informational messages with customizable icons and styling.
 
 ```csharp
@@ -106,7 +137,8 @@ dialog.DescriptionPadding = new Thickness(20);
 await dialog.ShowAsync();
 ```
 
-### Confirmation Dialog
+### Confirm Dialog
+
 Get user confirmation with customizable buttons.
 
 ```csharp
@@ -127,8 +159,9 @@ var dialog = new ConfirmDialog(
 bool result = await dialog.ShowAsync();
 ```
 
-### Prompt Dialog (Single Line)
-Collect single-line text input with validation support.
+### Prompt Dialog
+
+Collect single-line text input with validation support and password visibility toggle.
 
 ```csharp
 // Basic text input
@@ -158,8 +191,9 @@ string? email = await PromptDialog.ShowAsync(
 );
 ```
 
-### Editor Dialog (Multi-line)
-Collect multi-line text with configurable constraints.
+### Editor Dialog
+
+Collect multi-line text with configurable constraints, spell check, and text prediction.
 
 ```csharp
 // Basic multi-line input
@@ -189,7 +223,8 @@ string? feedback = await dialog.ShowAsync();
 ```
 
 ### Loading Dialog
-Show progress indicators with optional cancellation.
+
+Show progress indicators with optional cancellation support.
 
 ```csharp
 // Simple loading
@@ -219,7 +254,8 @@ await MopupService.Instance.RemovePageAsync(loading);
 ```
 
 ### Action List Dialog
-Present a list of actions with optional icons and descriptions. Supports multi-line descriptions with customizable truncation and wrapping behavior.
+
+Present a list of actions with optional icons, descriptions, and hierarchical sub-menus. Supports multi-line descriptions with customizable truncation and wrapping behavior.
 
 ```csharp
 // Basic action list
@@ -255,7 +291,41 @@ var actionsWithIcons = new List<ActionItem>
         "edit_icon_dark.png", "edit_icon_light.png")
 };
 
-// Multi-line descriptions (NEW in v1.1.0)
+// Hierarchical menus (NEW in v1.3.0)
+var menuWithSubItems = new List<ActionItem>
+{
+    new ActionItem("File", "File operations", 0)
+    {
+        SubItems = new List<ActionItem>
+        {
+            new ActionItem("New", "Create new file", 10),
+            new ActionItem("Open", "Open existing file", 11),
+            new ActionItem("Save", "Save current file", 12)
+        }
+    },
+    new ActionItem("Edit", "Edit operations", 1)
+    {
+        SubItems = new List<ActionItem>
+        {
+            new ActionItem("Cut", "Cut selection", 20),
+            new ActionItem("Copy", "Copy selection", 21),
+            new ActionItem("Paste", "Paste from clipboard", 22)
+        }
+    },
+    new ActionItem("Settings", "Open settings", 2)
+};
+
+var hierarchicalDialog = new ActionListDialog(
+    "Main Menu",
+    menuWithSubItems,
+    "Cancel"
+);
+
+// User can navigate through sub-menus
+// Back button automatically handles navigation
+int selected = await hierarchicalDialog.ShowAsync();
+
+// Multi-line descriptions
 var premiumActions = new List<ActionItem>
 {
     new ActionItem("Cloud Sync",
@@ -271,15 +341,16 @@ var multiLineDialog = new ActionListDialog(
     premiumActions,
     "Cancel",
     customHeight: null,
-    descriptionMaxLines: 2,  // Wrap to 2 lines with ellipsis
+    descriptionMaxLines: 2,
     descriptionLineBreakMode: LineBreakMode.TailTruncation
 );
 
-int selected = await multiLineDialog.ShowAsync();
+int selectedFeature = await multiLineDialog.ShowAsync();
 ```
 
 ### Color Picker Dialog
-Advanced color selection with RGB sliders, hex input, and preset colors.
+
+Advanced color selection with RGB sliders, hex input, alpha channel support, and preset colors.
 
 ```csharp
 // Basic color picker
@@ -321,7 +392,154 @@ var customDialog = new ColorPickerDialog(
 );
 ```
 
-## 🎨 Theming
+## Notifications
+
+### Toast
+
+Lightweight, non-interactive "fire-and-forget" notifications for quick status updates.
+
+```csharp
+// Simple toast
+await Toast.ShowAsync("Message sent");
+
+// With icon
+await Toast.ShowAsync("Operation complete!", DialogType.Success);
+
+// With icon and duration
+await Toast.ShowAsync("Something went wrong", DialogType.Error, ToastDuration.Long);
+
+// Full customization (position, duration)
+await Toast.ShowAsync(
+    "This appears at the top",
+    DialogType.Info,
+    ToastDuration.Short,
+    ToastPosition.Top
+);
+
+// Custom duration in milliseconds
+await Toast.ShowAsync("Custom timing", DialogType.None, 5000, ToastPosition.Bottom);
+
+// Dismiss all toasts
+await Toast.DismissAllAsync();
+```
+
+**Toast Features:**
+- **Position**: Top or Bottom of screen (default: Bottom)
+- **Duration**: Short (2s) or Long (3.5s), or custom milliseconds
+- **Icons**: Supports all DialogType icons
+- **Stacking**: Multiple toasts can stack, replace, or queue
+- **Non-blocking**: User can continue interacting with the app
+
+**Stacking Behavior Configuration:**
+
+```csharp
+// Stack multiple toasts (default)
+Toast.DefaultStackBehavior = ToastStackBehavior.Stack;
+Toast.MaxVisibleToasts = 3;  // Maximum visible at once
+
+// Replace existing toasts
+Toast.DefaultStackBehavior = ToastStackBehavior.Replace;
+
+// Queue toasts (show one at a time)
+Toast.DefaultStackBehavior = ToastStackBehavior.Queue;
+```
+
+### Snackbar
+
+Actionable notifications with optional buttons for quick user responses.
+
+```csharp
+// Simple snackbar
+var result = await Snackbar.ShowAsync("File saved to documents");
+
+// With action button
+var result = await Snackbar.ShowAsync("Item deleted", "UNDO");
+if (result == SnackbarResult.ActionClicked)
+{
+    // User clicked UNDO
+    RestoreItem();
+}
+
+// With action callback
+var result = await Snackbar.ShowAsync(
+    "Message archived",
+    "UNDO",
+    () => UnarchiveMessage()  // Called when UNDO is clicked
+);
+
+// Full customization
+var result = await Snackbar.ShowAsync(
+    message: "Connection lost",
+    actionText: "RETRY",
+    actionCallback: () => Reconnect(),
+    iconType: DialogType.Error,
+    duration: SnackbarDuration.Long,
+    position: ToastPosition.Bottom
+);
+
+// Indefinite snackbar (stays until user interaction)
+var result = await Snackbar.ShowAsync(
+    "No internet connection",
+    "RETRY",
+    null,
+    DialogType.Warning,
+    SnackbarDuration.Indefinite,
+    ToastPosition.Bottom
+);
+
+// Dismiss all snackbars
+await Snackbar.DismissAllAsync();
+```
+
+**Snackbar Features:**
+- **Action Button**: Optional button with callback (UNDO, RETRY, VIEW, etc.)
+- **Position**: Top or Bottom of screen (default: Bottom)
+- **Duration**: Short (4s), Long (7s), or Indefinite
+- **Icons**: Supports all DialogType icons
+- **Swipe to Dismiss**: Users can swipe to dismiss
+- **Stacking**: Multiple snackbars can stack, replace, or queue
+- **Result Tracking**: Returns `SnackbarResult` (ActionClicked, Dismissed, TimedOut)
+
+**Stacking Behavior Configuration:**
+
+```csharp
+// Stack multiple snackbars (default)
+Snackbar.DefaultStackBehavior = SnackbarStackBehavior.Stack;
+Snackbar.MaxVisibleSnackbars = 3;
+
+// Replace existing snackbars
+Snackbar.DefaultStackBehavior = SnackbarStackBehavior.Replace;
+
+// Queue snackbars
+Snackbar.DefaultStackBehavior = SnackbarStackBehavior.Queue;
+```
+
+**SnackbarResult Enumeration:**
+
+```csharp
+public enum SnackbarResult
+{
+    Dismissed,      // User dismissed (swipe, tap outside, back button)
+    ActionClicked,  // User clicked the action button
+    TimedOut        // Snackbar auto-dismissed after duration
+}
+```
+
+### When to Use Toast vs Snackbar
+
+| Use Case | Recommended |
+|----------|-------------|
+| "Saved" / "Copied" / "Sent" | Toast |
+| "Item deleted" with UNDO | Snackbar |
+| "Connection lost" with RETRY | Snackbar |
+| "Settings updated" | Toast |
+| "File uploaded" with VIEW | Snackbar |
+| Quick status confirmation | Toast |
+| Actions that might need reversal | Snackbar |
+
+## Theming
+
+The library provides comprehensive theming support with automatic dark/light mode detection.
 
 ### Custom Theme Creation
 
@@ -459,15 +677,16 @@ await AlertDialog.ShowAsync(
 - Emphasized text within descriptions
 - Rich informational dialogs
 
-## 🌍 Localization
+## Localization
+
+The library includes a complete localization framework with built-in translations and extensibility.
 
 ### Built-in Language Support
 
-The library includes translations for:
-- 🇬🇧 English (default)
-- 🇪🇸 Spanish (es)
-- 🇫🇷 French (fr)
-- 🇩🇪 German (de)
+- **English** (default)
+- **Spanish** (es)
+- **French** (fr)
+- **German** (de)
 
 ### Custom Localization Implementation
 
@@ -509,9 +728,11 @@ var spanishLocalization = new DefaultDialogLocalization(new CultureInfo("es-ES")
 DialogService.Instance.SetLocalization(spanishLocalization);
 ```
 
-## 🎯 Advanced Features
+## Advanced Features
 
 ### Custom Dialog Creation
+
+Extend `BaseDialog` to create custom dialogs with full theming support:
 
 ```csharp
 public class RatingDialog : BaseDialog
@@ -633,14 +854,171 @@ var dialog = new AlertDialog("Title", "Message")
 };
 ```
 
-## 📋 Requirements
+## API Reference
 
-- **.NET 9.0** or higher
-- **.NET MAUI**
-- **Mopups** (automatically included as dependency)
-- **Supported Platforms**: iOS 11.0+, Android 5.0 (API 21)+, Windows 10.0.17763.0+, macOS 10.15+
+### DialogService (Singleton)
 
-## ⚙️ Configuration Options
+The central service for managing dialogs, themes, and localization.
+
+```csharp
+// Access the singleton instance
+var service = DialogService.Instance;
+
+// Initialize with custom themes
+service.Initialize(lightTheme, darkTheme);
+
+// Theme management
+service.CurrentThemeOverride = customTheme;  // Override automatic detection
+service.LightTheme;                           // Get light theme
+service.DarkTheme;                            // Get dark theme
+
+// Overlay settings
+service.SetOverlayEnabled(true);
+service.SetOverlayColor(Color.FromRgba("#80000000"));
+
+// Localization
+service.SetLocalization(new CustomLocalization());
+
+// Custom icon registration
+service.RegisterCustomIcon(DialogType.Custom, "light.png", "dark.png");
+```
+
+### DialogType Enumeration
+
+```csharp
+public enum DialogType
+{
+    None,       // No icon
+    Info,       // Information icon (blue)
+    Success,    // Success icon (green)
+    Warning,    // Warning icon (orange)
+    Error,      // Error icon (red)
+    Question,   // Question icon (purple)
+    Help,       // Help icon
+    Custom      // Custom icon (user-defined)
+}
+```
+
+### DialogTheme Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `BackgroundColor` | `Color` | White/Dark | Dialog background |
+| `OverlayColor` | `Color` | #80000000 | Semi-transparent overlay |
+| `ShowOverlay` | `bool` | true | Enable background overlay |
+| `TitleTextColor` | `Color` | #212121 | Title text color |
+| `TitleFontSize` | `double` | 18 | Title font size |
+| `TitleMaxLines` | `int` | 2 | Maximum title lines |
+| `TitleLineBreakMode` | `LineBreakMode` | TailTruncation | Title truncation mode |
+| `DescriptionTextColor` | `Color` | #757575 | Description text color |
+| `DescriptionFontSize` | `double` | 14 | Description font size |
+| `DescriptionTextType` | `TextType` | Text | Text or HTML rendering |
+| `ButtonBackgroundColor` | `Color` | #2196F3 | Primary button background |
+| `ButtonTextColor` | `Color` | White | Primary button text |
+| `SecondaryButtonBackgroundColor` | `Color` | #F5F5F5 | Secondary button background |
+| `SecondaryButtonTextColor` | `Color` | #212121 | Secondary button text |
+| `DialogWidth` | `double` | 300 | Dialog width |
+| `DialogHeight` | `double` | 250 | Dialog height |
+| `DialogCornerRadius` | `double` | 12 | Corner radius |
+| `DialogPadding` | `double` | 20 | Internal padding |
+| `ButtonHeight` | `double` | 44 | Button height |
+| `HasShadow` | `bool` | true | Enable drop shadow |
+| `AnimationDuration` | `int` | 250 | Animation duration (ms) |
+| `EnableAnimation` | `bool` | true | Enable/disable animations |
+
+### ActionItem Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `Name` | `string` | Display name |
+| `Detail` | `string?` | Optional description |
+| `Value` | `int` | Return value when selected |
+| `ImageDark` | `string?` | Dark theme icon path |
+| `ImageLight` | `string?` | Light theme icon path |
+| `SubItems` | `List<ActionItem>?` | Hierarchical sub-menu items |
+| `ItemId` | `Guid` | Unique identifier |
+| `ShowImage` | `bool` | Whether to show icon (computed) |
+| `HasDetail` | `bool` | Whether detail text exists (computed) |
+| `HasSubItems` | `bool` | Whether sub-items exist (computed) |
+
+## Requirements
+
+### Minimum Platform Versions
+
+| Platform | Minimum Version |
+|----------|-----------------|
+| .NET | 9.0 |
+| iOS | 11.0 |
+| Android | API 21 (5.0 Lollipop) |
+| Windows | 10.0.17763.0 (1809) |
+| macOS | 13.1 (via Mac Catalyst) |
+
+### Dependencies
+
+- **Microsoft.Maui.Controls** (9.0.110+)
+- **Microsoft.Maui.Controls.Compatibility** (9.0.110+)
+- **Mopups** (1.3.4+) - Automatically included
+
+## Migration Guide
+
+### Upgrading from v1.3.x to v1.4.0
+
+No breaking changes. New features are additive:
+
+```csharp
+// NEW: Toast notifications
+await Toast.ShowAsync("Message sent", DialogType.Success);
+
+// NEW: Snackbar with action
+var result = await Snackbar.ShowAsync("Item deleted", "UNDO", () => RestoreItem());
+
+// NEW: Configure stacking behavior
+Toast.DefaultStackBehavior = ToastStackBehavior.Stack;
+Snackbar.DefaultStackBehavior = SnackbarStackBehavior.Replace;
+```
+
+### Upgrading from v1.2.x to v1.3.0
+
+No breaking changes. New features are additive:
+
+```csharp
+// NEW: Hierarchical menus
+var item = new ActionItem("Menu", "Description", 0);
+item.SubItems = new List<ActionItem> { /* sub-items */ };
+```
+
+### Upgrading from v1.1.x to v1.2.0
+
+No breaking changes. New theme properties:
+
+```csharp
+// NEW: Title customization
+theme.TitleMaxLines = 2;
+theme.TitleLineBreakMode = LineBreakMode.TailTruncation;
+
+// NEW: HTML support
+theme.DescriptionTextType = TextType.Html;
+```
+
+### Upgrading from v1.0.x to v1.1.0
+
+No breaking changes. New ActionListDialog features:
+
+```csharp
+// NEW: Multi-line descriptions
+var dialog = new ActionListDialog(
+    title, actions, cancelText,
+    customHeight: null,
+    descriptionMaxLines: 2,                    // NEW
+    descriptionLineBreakMode: LineBreakMode.TailTruncation  // NEW
+);
+
+// NEW: Dynamic updates
+dialog.DescriptionMaxLines = 3;
+dialog.DescriptionLineBreakMode = LineBreakMode.WordWrap;
+```
+
+## Configuration Options
 
 ### Global Settings
 
@@ -673,83 +1051,277 @@ var dialog = new AlertDialog("Title", "Message")
 };
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
-### Icons Not Displaying on Windows
-The library handles Windows platform differences automatically. Icons are converted to platform-specific formats during build.
+### Common Issues
 
-### Dialog Not Showing
-Ensure you've called `.UseMopups()` in your MauiProgram.cs configuration.
+#### Dialog Not Showing
 
-### Theme Not Applying
-Check that `CurrentThemeOverride` is not set if you want automatic theme detection.
+**Problem**: Dialog doesn't appear when calling `ShowAsync()`.
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 💬 Support
-
-- 📧 Email: support@marketally.com
-- 🐛 Issues: [GitHub Issues](https://github.com/MarketAlly/Dialogs.Maui/issues)
-
-## 🙏 Acknowledgments
-
-- Built with [.NET MAUI](https://github.com/dotnet/maui)
-- Popup functionality powered by [Mopups](https://github.com/LuckyDucko/Mopups)
-- Icons from Material Design
-
-## 🆕 What's New in v1.1.0
-
-### Enhanced Action List Dialog
-- **Multi-line Description Support**: Descriptions can now wrap to 2, 3, or more lines
-- **Configurable Line Break Modes**: Choose between tail truncation, word wrap, character wrap, head truncation, and middle truncation
-- **Intelligent Scrolling**: Automatically shows scrollbar when content exceeds dialog height
-- **Fixed Dialog Height**: Consistent dialog sizing with scrollable content area
-
-### Improved Dialog Dismissal
-- **Instant Dismissal**: Dialogs now respect the `EnableAnimation` theme setting
-- **Disable Animations**: Set `DialogTheme.EnableAnimation = false` for instant dialog dismissal
-- **Better UX**: Controls are disabled immediately on interaction to prevent double-taps
-
-### API Enhancements
+**Solution**: Ensure Mopups is configured in `MauiProgram.cs`:
 ```csharp
-// Configure description behavior
-var dialog = new ActionListDialog(
-    title: "Select Option",
-    items: actions,
-    cancelText: "Cancel",
-    customHeight: null,
-    descriptionMaxLines: 2,  // NEW: Control line wrapping
-    descriptionLineBreakMode: LineBreakMode.TailTruncation  // NEW: Control truncation
-);
-
-// Dynamic updates
-dialog.DescriptionMaxLines = 3;  // NEW: Change after creation
-dialog.DescriptionLineBreakMode = LineBreakMode.WordWrap;  // NEW: Update behavior
+builder.ConfigureMopups();
 ```
 
-## 📈 Roadmap
+#### Icons Not Displaying
 
-- [ ] Snackbar support
-- [ ] Date/Time picker dialogs
-- [ ] Custom animation effects
-- [ ] More preset themes
-- [ ] Additional language translations
-- [ ] MVVM command binding support
+**Problem**: Dialog icons appear blank or missing.
+
+**Solution**:
+1. Verify icon files are included in the project as `MauiImage`
+2. Check that file names match exactly (case-sensitive)
+3. For Windows, ensure PNG format is used
+
+#### Theme Not Applying
+
+**Problem**: Custom theme changes aren't reflected.
+
+**Solution**:
+```csharp
+// Clear override to use automatic detection
+DialogService.Instance.CurrentThemeOverride = null;
+
+// Or explicitly set the theme
+DialogService.Instance.CurrentThemeOverride = customTheme;
+```
+
+#### Memory Warnings on iOS
+
+**Problem**: App receives memory warnings with many dialogs.
+
+**Solution**: The library includes automatic image caching. Ensure you're not creating redundant dialog instances.
+
+#### Title Truncation Issues on Windows
+
+**Problem**: `HeadTruncation` or `MiddleTruncation` don't work on Windows.
+
+**Solution**: Use platform-compatible modes:
+```csharp
+theme.TitleLineBreakMode = LineBreakMode.TailTruncation; // Recommended
+// or
+theme.TitleLineBreakMode = LineBreakMode.WordWrap;
+```
+
+#### ActionListDialog "Duplicate Key" Exception
+
+**Problem**: Exception when showing dialog immediately after another dismisses.
+
+**Solution**: This was fixed in v1.3.0. Upgrade to latest version or ensure proper async/await usage:
+```csharp
+var result = await actionListDialog.ShowAsync();
+// Dialog is fully dismissed before this line executes
+await nextDialog.ShowAsync(); // Safe to show next dialog
+```
+
+### Platform-Specific Notes
+
+**iOS**
+- Supports all features including gesture recognizers
+- Memory-optimized image loading
+
+**Android**
+- Full material design integration
+- Hardware back button support in hierarchical menus
+
+**Windows**
+- Some `LineBreakMode` options have limited support
+- Recommend using `TailTruncation` or `WordWrap`
+
+**macOS (Catalyst)**
+- Keyboard navigation supported
+- Dark mode follows system preferences
+
+## Contributing
+
+We welcome contributions from the community.
+
+### Development Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/MarketAlly/Dialogs.Maui.git
+   ```
+
+2. Open solution in Visual Studio 2022 or JetBrains Rider
+
+3. Restore NuGet packages:
+   ```bash
+   dotnet restore
+   ```
+
+4. Build the solution:
+   ```bash
+   dotnet build
+   ```
+
+### Contribution Guidelines
+
+1. **Fork the Repository**: Create your own fork on GitHub
+
+2. **Create a Feature Branch**:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+3. **Follow Code Standards**:
+   - Use consistent naming conventions
+   - Add XML documentation for public APIs
+   - Include unit tests for new features
+
+4. **Commit with Clear Messages**:
+   ```bash
+   git commit -m "Add: Brief description of feature"
+   ```
+
+5. **Push and Create PR**:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+   Then open a Pull Request on GitHub
+
+6. **PR Requirements**:
+   - Clear description of changes
+   - No breaking changes without discussion
+   - All tests passing
+   - Updated documentation if needed
+
+### Code Style
+
+- Use C# 12 features where appropriate
+- Enable nullable reference types
+- Follow .NET naming conventions
+- Keep methods focused and small
+
+## Support
+
+### Getting Help
+
+- **GitHub Issues**: [Report bugs or request features](https://github.com/MarketAlly/Dialogs.Maui/issues)
+- **Documentation**: Full API documentation in this README
+- **Email**: support@marketally.com
+
+### Reporting Issues
+
+When reporting bugs, please include:
+1. .NET MAUI version
+2. Target platform(s) affected
+3. Minimal reproduction code
+4. Expected vs. actual behavior
+5. Stack trace (if applicable)
+
+## License
+
+This project is licensed under the **MIT License**.
+
+```
+MIT License
+
+Copyright (c) 2025 MarketAlly
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## Acknowledgments
+
+- Built on [.NET MAUI](https://github.com/dotnet/maui) by Microsoft
+- Popup infrastructure powered by [Mopups](https://github.com/LuckyDucko/Mopups) by LuckyDucko
+- Inspired by Material Design principles
+
+## Changelog
+
+### Version 1.4.0 (Latest)
+
+**New Features:**
+- **Toast Notifications**: Lightweight, non-interactive notifications for quick status updates
+  - Configurable position (Top/Bottom)
+  - Short (2s) and Long (3.5s) durations, or custom milliseconds
+  - Optional icons using existing DialogType
+  - Configurable stacking behavior (Stack, Replace, Queue)
+- **Snackbar Notifications**: Actionable notifications with optional buttons
+  - Action button with callback support (UNDO, RETRY, VIEW, etc.)
+  - Short (4s), Long (7s), or Indefinite duration
+  - Swipe-to-dismiss support
+  - Returns SnackbarResult (ActionClicked, Dismissed, TimedOut)
+  - Configurable stacking behavior
+- **New Localization Strings**: Added DISMISS, UNDO, RETRY translations for all 4 languages
+
+**Improvements:**
+- Non-blocking notifications allow continued user interaction
+- Multiple notifications can stack vertically
+- Consistent theming with existing dialog components
+
+### Version 1.3.0
+
+**New Features:**
+- Hierarchical Action List Support with `ActionItem.SubItems`
+- Automatic back navigation in sub-menus
+- Unlimited nesting depth for menu hierarchies
+
+**Bug Fixes:**
+- Fixed critical "duplicate key" exception on rapid dialog transitions
+- Fixed async race condition in `PopAsync` handling
+
+### Version 1.2.0
+
+**New Features:**
+- Title MaxLines and LineBreakMode configuration
+- HTML description support via `DescriptionTextType`
+
+### Version 1.1.0
+
+**New Features:**
+- Multi-line description support in ActionListDialog
+- Configurable line break modes
+- Dynamic property updates after dialog creation
+- Intelligent scrolling for content overflow
+
+**Improvements:**
+- Fixed dialog height with scrollable content
+- Instant dismissal option via `EnableAnimation`
+- Double-tap prevention
+
+### Version 1.0.0
+
+**Initial Release:**
+- 7 dialog types (Alert, Confirm, Prompt, Editor, Loading, ActionList, ColorPicker)
+- Dark/light theme support with automatic detection
+- Internationalization (English, Spanish, French, German)
+- Custom icon support
+- Cross-platform support (iOS, Android, Windows, macOS)
+
+## Roadmap
+
+Planned features for future releases:
+
+- [x] **Snackbar/Toast notifications** - Non-blocking notifications ✅ Added in v1.4.0
+- [ ] **Date/Time picker dialogs** - Native date and time selection
+- [ ] **Custom animation effects** - Slide, fade, scale transitions
+- [ ] **Preset theme gallery** - Material, Fluent, Cupertino themes
+- [ ] **Additional localizations** - Chinese, Japanese, Portuguese, Italian
+- [ ] **MVVM command binding** - ICommand support for button actions
+- [ ] **Input validation framework** - Built-in validators for Prompt/Editor
+- [ ] **Accessibility improvements** - Enhanced screen reader support
+- [ ] **Performance telemetry** - Optional analytics for dialog usage
 
 ---
 
-**Made with ❤️ by MarketAlly**
+**Built with precision by [MarketAlly](https://marketally.com)**
 
-*Building better user experiences, one dialog at a time.*
+*Enterprise-grade dialog solutions for .NET MAUI applications.*

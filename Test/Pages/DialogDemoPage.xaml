@@ -234,6 +234,83 @@
                     BackgroundColor="Crimson"
                     TextColor="White"/>
 
+            <!-- Toast Notifications -->
+            <Label Text="Toast Notifications"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Simple Toast"
+                    Clicked="OnSimpleToastClicked"
+                    BackgroundColor="#323232"
+                    TextColor="White"/>
+
+            <Button Text="Toast with Success Icon"
+                    Clicked="OnSuccessToastClicked"
+                    BackgroundColor="Green"
+                    TextColor="White"/>
+
+            <Button Text="Toast with Error Icon"
+                    Clicked="OnErrorToastClicked"
+                    BackgroundColor="Red"
+                    TextColor="White"/>
+
+            <Button Text="Toast at Top"
+                    Clicked="OnTopToastClicked"
+                    BackgroundColor="#5C6BC0"
+                    TextColor="White"/>
+
+            <Button Text="Long Duration Toast"
+                    Clicked="OnLongToastClicked"
+                    BackgroundColor="#7E57C2"
+                    TextColor="White"/>
+
+            <Button Text="Multiple Stacked Toasts"
+                    Clicked="OnStackedToastsClicked"
+                    BackgroundColor="#AB47BC"
+                    TextColor="White"/>
+
+            <!-- Snackbar Notifications -->
+            <Label Text="Snackbar Notifications"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,5"/>
+
+            <Button Text="Simple Snackbar"
+                    Clicked="OnSimpleSnackbarClicked"
+                    BackgroundColor="#424242"
+                    TextColor="White"/>
+
+            <Button Text="Snackbar with Undo"
+                    Clicked="OnUndoSnackbarClicked"
+                    BackgroundColor="#FF7043"
+                    TextColor="White"/>
+
+            <Button Text="Snackbar with Retry"
+                    Clicked="OnRetrySnackbarClicked"
+                    BackgroundColor="#EF5350"
+                    TextColor="White"/>
+
+            <Button Text="Snackbar with Icon"
+                    Clicked="OnIconSnackbarClicked"
+                    BackgroundColor="#42A5F5"
+                    TextColor="White"/>
+
+            <Button Text="Indefinite Snackbar"
+                    Clicked="OnIndefiniteSnackbarClicked"
+                    BackgroundColor="#66BB6A"
+                    TextColor="White"/>
+
+            <Button Text="Multiple Stacked Snackbars"
+                    Clicked="OnStackedSnackbarsClicked"
+                    BackgroundColor="#26A69A"
+                    TextColor="White"/>
+
+            <Button Text="Snackbar at Top"
+                    Clicked="OnTopSnackbarClicked"
+                    BackgroundColor="#5C6BC0"
+                    TextColor="White"/>
+
             <!-- Result Display -->
             <Border BackgroundColor="LightGray"
                    Padding="10"
