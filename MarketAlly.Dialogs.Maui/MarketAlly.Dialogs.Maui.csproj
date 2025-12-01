@@ -30,19 +30,63 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>MarketAlly.Dialogs.Maui</PackageId>
     <Title>MarketAlly Dialogs for .NET MAUI</Title>
-    <Version>1.4.1</Version>
+    <Version>1.5.0</Version>
     <Authors>David H Friedel Jr</Authors>
     <Company>MarketAlly</Company>
-    <Description>A comprehensive, production-ready dialog library for .NET MAUI applications featuring 9 dialog types (Alert, Confirm, Prompt, Editor, Loading, ActionList, ColorPicker, Toast, Snackbar), built-in theming with dark/light mode support, internationalization (English, Spanish, French, German), custom icons, and extensive customization options. Supports iOS, Android, Windows, and macOS.</Description>
+    <Description>A comprehensive, production-ready dialog library for .NET MAUI applications featuring 12 dialog types (Alert, Confirm, Prompt, Editor, Loading, ActionList, ColorPicker, DatePicker, TimePicker, DateTimePicker, Toast, Snackbar), built-in theming with Material/Fluent/Cupertino presets, internationalization (English, Spanish, French, German, Chinese, Japanese, Portuguese, Italian), MVVM support, input validation, custom animations, accessibility features, and telemetry. Supports iOS, Android, Windows, and macOS.</Description>
     <Copyright>Copyright © MarketAlly 2025</Copyright>
 		<PackageIcon>icon.png</PackageIcon>
-    <PackageTags>maui;dialog;popup;modal;alert;confirm;prompt;loading;actionlist;colorpicker;toast;snackbar;notification;theme;dark-mode;localization;i18n;mopups;ios;android;windows;macos;ui;controls</PackageTags>
+    <PackageTags>maui;dialog;popup;modal;alert;confirm;prompt;loading;actionlist;colorpicker;datepicker;timepicker;toast;snackbar;notification;theme;dark-mode;material;fluent;cupertino;localization;i18n;mvvm;validation;accessibility;mopups;ios;android;windows;macos;ui;controls</PackageTags>
     <PackageProjectUrl>https://github.com/MarketAlly/Dialogs.Maui</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MarketAlly/Dialogs.Maui</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+Version 1.5.0 - Major Feature Release:
+
+NEW FEATURES:
+• Date/Time Picker Dialogs: Three new picker dialogs
+  - DatePickerDialog: Native date selection with min/max date constraints
+  - TimePickerDialog: Native time selection with Now button
+  - DateTimePickerDialog: Combined date and time selection in one dialog
+• Theme Presets: Material, Fluent, and Cupertino design system presets
+  - DialogThemePresets.MaterialLight/MaterialDark
+  - DialogThemePresets.FluentLight/FluentDark
+  - DialogThemePresets.CupertinoLight/CupertinoDark
+  - Factory methods: DialogTheme.Material(), DialogTheme.Fluent(), DialogTheme.Cupertino()
+• Custom Animations: Configurable dialog animations
+  - DialogAnimationType enum (Fade, Scale, SlideUp, SlideDown, etc.)
+  - IDialogAnimation interface for custom animations
+  - DialogAnimationFactory for creating animations
+• MVVM Support: RelayCommand and DialogCommands helper classes
+  - RelayCommand, RelayCommand&lt;T&gt;, AsyncRelayCommand
+  - DialogCommands factory methods for common dialog patterns
+• Input Validation Framework: Fluent validation API
+  - InputValidationService with Required, MinLength, MaxLength, Email, Phone validators
+  - ValidationOptions for configuring validation behavior
+  - Custom validators via CustomValidator or IInputValidator
+• Accessibility Improvements: AccessibilityHelper class
+  - AutomationId naming convention: MADialog_{DialogType}_{ControlType}_{Name}
+  - SemanticProperties configuration helpers
+  - WCAG contrast ratio checking
+• Performance Telemetry: Opt-in dialog usage analytics
+  - IDialogTelemetry interface
+  - DialogTelemetryEvent for open/close tracking
+  - TelemetryConfiguration for enabling/configuring telemetry
+• Additional Localizations: Chinese (zh), Japanese (ja), Portuguese (pt), Italian (it)
+  - Full translations for all dialog strings
+  - Date/Time picker strings
+  - Validation error messages
+
+IMPROVEMENTS:
+• 8 supported languages (EN, ES, FR, DE, ZH, JA, PT, IT)
+• Theme-aware animations with platform fallbacks
+• Consistent API patterns across all new dialogs
+
+BREAKING CHANGES:
+• None - fully backward compatible with v1.4.1
+
 Version 1.4.1 - ActionItem Callbacks &amp; Toast Horizontal Positioning:
 
 NEW FEATURES:

@@ -4,356 +4,85 @@
              x:Class="Test.Pages.DialogDemoPage"
              Title="Dialog Demos">
 
-    <ScrollView Padding="20">
-        <VerticalStackLayout Spacing="15">
+    <ContentPage.Resources>
+        <Style x:Key="CategoryButton" TargetType="Button">
+            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HeightRequest" Value="60"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="CornerRadius" Value="10"/>
+        </Style>
+    </ContentPage.Resources>
 
-            <Label Text="MarketAlly Dialog Demos"
-                   FontSize="24"
+    <ScrollView Padding="15">
+        <VerticalStackLayout Spacing="10">
+
+            <Label Text="MarketAlly Dialog Library"
+                   FontSize="28"
                    FontAttributes="Bold"
                    HorizontalOptions="Center"
-                   Margin="0,0,0,20"/>
-
-            <!-- Alert Dialogs -->
-            <Label Text="Alert Dialogs"
-                   FontSize="18"
-                   FontAttributes="Bold"
                    Margin="0,10,0,5"/>
 
-            <Button Text="Show Success Alert"
-                    Clicked="OnSuccessAlertClicked"
-                    BackgroundColor="Green"
-                    TextColor="White"/>
-
-            <Button Text="Show Error Alert"
-                    Clicked="OnErrorAlertClicked"
-                    BackgroundColor="Red"
-                    TextColor="White"/>
-
-            <Button Text="Show Warning Alert"
-                    Clicked="OnWarningAlertClicked"
-                    BackgroundColor="Orange"
-                    TextColor="White"/>
-
-            <Button Text="Show Info Alert"
-                    Clicked="OnInfoAlertClicked"
-                    BackgroundColor="Blue"
-                    TextColor="White"/>
-
-            <!-- Confirmation Dialogs -->
-            <Label Text="Confirmation Dialogs"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
-
-            <Button Text="Show Yes/No Confirmation"
-                    Clicked="OnYesNoConfirmationClicked"
-                    BackgroundColor="Purple"
-                    TextColor="White"/>
-
-            <Button Text="Show Delete Confirmation"
-                    Clicked="OnDeleteConfirmationClicked"
-                    BackgroundColor="DarkRed"
-                    TextColor="White"/>
-
-            <!-- Prompt Dialogs -->
-            <Label Text="Prompt Dialogs"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
-
-            <Button Text="Show Text Input Prompt"
-                    Clicked="OnTextPromptClicked"
-                    BackgroundColor="Teal"
-                    TextColor="White"/>
-
-            <Button Text="Show Password Prompt"
-                    Clicked="OnPasswordPromptClicked"
-                    BackgroundColor="DarkBlue"
-                    TextColor="White"/>
-
-            <!-- Editor Dialogs -->
-            <Label Text="Multi-line Editor Dialogs"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
-
-            <Button Text="Show Notes Editor"
-                    Clicked="OnNotesEditorClicked"
-                    BackgroundColor="DarkGreen"
-                    TextColor="White"/>
-
-            <Button Text="Show Feedback Editor"
-                    Clicked="OnFeedbackEditorClicked"
-                    BackgroundColor="SeaGreen"
-                    TextColor="White"/>
-
-            <!-- Action List Dialog -->
-            <Label Text="Action List Dialog"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
-
-            <Button Text="Show Action List"
-                    Clicked="OnActionListClicked"
-                    BackgroundColor="SlateBlue"
-                    TextColor="White"/>
-
-            <Button Text="Show Action List with Icons"
-                    Clicked="OnActionListWithIconsClicked"
-                    BackgroundColor="RoyalBlue"
-                    TextColor="White"/>
-
-            <Button Text="Hierarchical Menu with Submenus"
-                    Clicked="OnHierarchicalMenuClicked"
-                    BackgroundColor="Indigo"
-                    TextColor="White"/>
-
-            <Button Text="Test Chained Dialogs"
-                    Clicked="OnChainedDialogsClicked"
-                    BackgroundColor="DarkSlateBlue"
-                    TextColor="White"/>
-
-            <Button Text="Show 10 Item Action List"
-                    Clicked="OnLargeActionListClicked"
-                    BackgroundColor="MediumSlateBlue"
-                    TextColor="White"/>
-
-            <Button Text="Action List with Multi-line Descriptions"
-                    Clicked="OnMultiLineActionListClicked"
-                    BackgroundColor="MediumPurple"
-                    TextColor="White"/>
-
-            <Button Text="Description Variations Demo"
-                    Clicked="OnDescriptionVariationsClicked"
-                    BackgroundColor="DarkOrchid"
-                    TextColor="White"/>
-
-            <Button Text="Action Callbacks Demo"
-                    Clicked="OnActionCallbacksClicked"
-                    BackgroundColor="DarkGoldenrod"
-                    TextColor="White"/>
-
-            <!-- Color Picker Dialog -->
-            <Label Text="Color Picker Dialog"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
-
-            <Button Text="Show Basic Color Picker"
-                    Clicked="OnColorPickerClicked"
-                    BackgroundColor="HotPink"
-                    TextColor="White"/>
-
-            <Button Text="Show Color Picker with Alpha"
-                    Clicked="OnColorPickerWithAlphaClicked"
-                    BackgroundColor="MediumPurple"
-                    TextColor="White"/>
-
-            <Button Text="Show Color Picker (No Presets)"
-                    Clicked="OnColorPickerNoPresetsClicked"
-                    BackgroundColor="CornflowerBlue"
-                    TextColor="White"/>
-
-            <!-- Loading Dialog -->
-            <Label Text="Loading Dialog"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
-
-            <Button Text="Show Loading (3 seconds)"
-                    Clicked="OnLoadingClicked"
-                    BackgroundColor="Gray"
-                    TextColor="White"/>
-
-            <Button Text="Show Loading with Cancel"
-                    Clicked="OnLoadingWithCancelClicked"
-                    BackgroundColor="DarkGray"
-                    TextColor="White"/>
-
-            <!-- Theme Testing -->
-            <Label Text="Theme Testing"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
-
-            <Button Text="Toggle Theme"
-                    Clicked="OnToggleThemeClicked"
-                    BackgroundColor="Indigo"
-                    TextColor="White"/>
-
-            <Label x:Name="CurrentThemeLabel"
-                   Text="Current Theme: Light"
+            <Label Text="v1.5.0 - Tap a category to explore"
+                   FontSize="14"
+                   TextColor="Gray"
                    HorizontalOptions="Center"
-                   Margin="0,5,0,0"/>
+                   Margin="0,0,0,15"/>
 
-            <!-- Custom Dialog -->
-            <Label Text="Custom Dialog"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
+            <Button Text="Alerts"
+                    Clicked="OnAlertsCategoryClicked"
+                    BackgroundColor="#4CAF50"
+                    Style="{StaticResource CategoryButton}"/>
 
-            <Button Text="Show Custom Dialog"
-                    Clicked="OnCustomDialogClicked"
-                    BackgroundColor="Magenta"
-                    TextColor="White"/>
+            <Button Text="Confirmations"
+                    Clicked="OnConfirmationsCategoryClicked"
+                    BackgroundColor="#2196F3"
+                    Style="{StaticResource CategoryButton}"/>
 
-            <!-- Long Text Testing -->
-            <Label Text="Long Text Testing"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
+            <Button Text="Prompts &amp; Editors"
+                    Clicked="OnPromptsCategoryClicked"
+                    BackgroundColor="#00BCD4"
+                    Style="{StaticResource CategoryButton}"/>
 
-            <Button Text="Alert with Long Title"
-                    Clicked="OnLongTitleAlertClicked"
-                    BackgroundColor="Brown"
-                    TextColor="White"/>
+            <Button Text="Date &amp; Time Pickers (v1.5.0)"
+                    Clicked="OnDateTimeCategoryClicked"
+                    BackgroundColor="#FF9800"
+                    Style="{StaticResource CategoryButton}"/>
 
-            <Button Text="Alert with Long Description"
-                    Clicked="OnLongDescriptionAlertClicked"
-                    BackgroundColor="Olive"
-                    TextColor="White"/>
+            <Button Text="Action Lists"
+                    Clicked="OnActionListsCategoryClicked"
+                    BackgroundColor="#9C27B0"
+                    Style="{StaticResource CategoryButton}"/>
 
-            <!-- New Features v1.2.0 -->
-            <Label Text="New Features (v1.2.0)"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
+            <Button Text="Color Picker"
+                    Clicked="OnColorPickerCategoryClicked"
+                    BackgroundColor="#E91E63"
+                    Style="{StaticResource CategoryButton}"/>
 
-            <Button Text="Title MaxLines Demo"
-                    Clicked="OnTitleMaxLinesClicked"
-                    BackgroundColor="DarkCyan"
-                    TextColor="White"/>
+            <Button Text="Loading Dialogs"
+                    Clicked="OnLoadingCategoryClicked"
+                    BackgroundColor="#607D8B"
+                    Style="{StaticResource CategoryButton}"/>
 
-            <Button Text="Title LineBreakMode Demo"
-                    Clicked="OnTitleLineBreakModeClicked"
-                    BackgroundColor="Teal"
-                    TextColor="White"/>
+            <Button Text="Toasts &amp; Snackbars"
+                    Clicked="OnToastSnackbarCategoryClicked"
+                    BackgroundColor="#795548"
+                    Style="{StaticResource CategoryButton}"/>
 
-            <Button Text="HTML Description Demo"
-                    Clicked="OnHtmlDescriptionClicked"
-                    BackgroundColor="DarkOrange"
-                    TextColor="White"/>
+            <Button Text="Theme Presets (v1.5.0)"
+                    Clicked="OnThemePresetsCategoryClicked"
+                    BackgroundColor="#673AB7"
+                    Style="{StaticResource CategoryButton}"/>
 
-            <Button Text="Combined New Features Demo"
-                    Clicked="OnCombinedFeaturesClicked"
-                    BackgroundColor="Crimson"
-                    TextColor="White"/>
+            <Button Text="MVVM Commands (v1.5.0)"
+                    Clicked="OnMvvmCommandsCategoryClicked"
+                    BackgroundColor="#3F51B5"
+                    Style="{StaticResource CategoryButton}"/>
 
-            <!-- Toast Notifications -->
-            <Label Text="Toast Notifications"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
-
-            <Button Text="Simple Toast"
-                    Clicked="OnSimpleToastClicked"
-                    BackgroundColor="#323232"
-                    TextColor="White"/>
-
-            <Button Text="Toast with Success Icon"
-                    Clicked="OnSuccessToastClicked"
-                    BackgroundColor="Green"
-                    TextColor="White"/>
-
-            <Button Text="Toast with Error Icon"
-                    Clicked="OnErrorToastClicked"
-                    BackgroundColor="Red"
-                    TextColor="White"/>
-
-            <Button Text="Toast at Top"
-                    Clicked="OnTopToastClicked"
-                    BackgroundColor="#5C6BC0"
-                    TextColor="White"/>
-
-            <Button Text="Long Duration Toast"
-                    Clicked="OnLongToastClicked"
-                    BackgroundColor="#7E57C2"
-                    TextColor="White"/>
-
-            <Button Text="Multiple Stacked Toasts"
-                    Clicked="OnStackedToastsClicked"
-                    BackgroundColor="#AB47BC"
-                    TextColor="White"/>
-
-            <!-- Toast Position Examples -->
-            <Label Text="Toast Positions"
-                   FontSize="16"
-                   FontAttributes="Bold"
-                   Margin="0,15,0,5"/>
-
-            <Button Text="Toast Bottom Left"
-                    Clicked="OnBottomLeftToastClicked"
-                    BackgroundColor="#00897B"
-                    TextColor="White"/>
-
-            <Button Text="Toast Bottom Right"
-                    Clicked="OnBottomRightToastClicked"
-                    BackgroundColor="#00ACC1"
-                    TextColor="White"/>
-
-            <Button Text="Toast Top Left"
-                    Clicked="OnTopLeftToastClicked"
-                    BackgroundColor="#43A047"
-                    TextColor="White"/>
-
-            <Button Text="Toast Top Right"
-                    Clicked="OnTopRightToastClicked"
-                    BackgroundColor="#7CB342"
-                    TextColor="White"/>
-
-            <!-- Snackbar Notifications -->
-            <Label Text="Snackbar Notifications"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   Margin="0,20,0,5"/>
-
-            <Button Text="Simple Snackbar"
-                    Clicked="OnSimpleSnackbarClicked"
-                    BackgroundColor="#424242"
-                    TextColor="White"/>
-
-            <Button Text="Snackbar with Undo"
-                    Clicked="OnUndoSnackbarClicked"
-                    BackgroundColor="#FF7043"
-                    TextColor="White"/>
-
-            <Button Text="Snackbar with Retry"
-                    Clicked="OnRetrySnackbarClicked"
-                    BackgroundColor="#EF5350"
-                    TextColor="White"/>
-
-            <Button Text="Snackbar with Icon"
-                    Clicked="OnIconSnackbarClicked"
-                    BackgroundColor="#42A5F5"
-                    TextColor="White"/>
-
-            <Button Text="Indefinite Snackbar"
-                    Clicked="OnIndefiniteSnackbarClicked"
-                    BackgroundColor="#66BB6A"
-                    TextColor="White"/>
-
-            <Button Text="Multiple Stacked Snackbars"
-                    Clicked="OnStackedSnackbarsClicked"
-                    BackgroundColor="#26A69A"
-                    TextColor="White"/>
-
-            <Button Text="Snackbar at Top"
-                    Clicked="OnTopSnackbarClicked"
-                    BackgroundColor="#5C6BC0"
-                    TextColor="White"/>
-
-            <!-- Result Display -->
-            <Border BackgroundColor="LightGray"
-                   Padding="10"
-                   Margin="0,20,0,0"
-                   StrokeShape="RoundRectangle 5">
-                <VerticalStackLayout>
-                    <Label Text="Last Result:" FontAttributes="Bold"/>
-                    <Label x:Name="ResultLabel"
-                           Text="No action performed yet"
-                           LineBreakMode="WordWrap"/>
-                </VerticalStackLayout>
-            </Border>
+            <Button Text="Advanced Features"
+                    Clicked="OnAdvancedCategoryClicked"
+                    BackgroundColor="#F44336"
+                    Style="{StaticResource CategoryButton}"/>
 
         </VerticalStackLayout>
     </ScrollView>

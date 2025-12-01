@@ -66,7 +66,7 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 TextColor = theme.DescriptionTextColor,
                 PlaceholderColor = theme.DescriptionTextColor.WithAlpha(0.5f),
                 VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Keyboard = keyboard ?? Keyboard.Default,
                 IsPassword = isPassword
             };

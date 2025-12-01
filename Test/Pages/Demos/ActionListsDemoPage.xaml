@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Test.Pages.Demos.ActionListsDemoPage"
+             Title="Action Lists">
+
+    <ContentPage.Resources>
+        <Style x:Key="DemoButton" TargetType="Button">
+            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="HeightRequest" Value="50"/>
+            <Setter Property="CornerRadius" Value="8"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView Padding="15">
+        <VerticalStackLayout Spacing="10">
+
+            <Border BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#333333}"
+                    Padding="10"
+                    StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout>
+                    <Label Text="Last Result:" FontAttributes="Bold"/>
+                    <Label x:Name="ResultLabel"
+                           Text="Tap a button to see the result"
+                           LineBreakMode="WordWrap"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Basic Lists" FontSize="18" FontAttributes="Bold" Margin="0,10,0,5"/>
+
+            <Button Text="Basic Action List"
+                    Clicked="OnActionListClicked"
+                    BackgroundColor="#9C27B0"
+                    Style="{StaticResource DemoButton}"/>
+
+            <Button Text="Action List with Icons"
+                    Clicked="OnActionListWithIconsClicked"
+                    BackgroundColor="#7B1FA2"
+                    Style="{StaticResource DemoButton}"/>
+
+            <Button Text="10 Item Action List"
+                    Clicked="OnLargeActionListClicked"
+                    BackgroundColor="#6A1B9A"
+                    Style="{StaticResource DemoButton}"/>
+
+            <Label Text="Advanced Features" FontSize="18" FontAttributes="Bold" Margin="0,15,0,5"/>
+
+            <Button Text="Hierarchical Menu"
+                    Clicked="OnHierarchicalMenuClicked"
+                    BackgroundColor="#512DA8"
+                    Style="{StaticResource DemoButton}"/>
+
+            <Button Text="Chained Dialogs"
+                    Clicked="OnChainedDialogsClicked"
+                    BackgroundColor="#4527A0"
+                    Style="{StaticResource DemoButton}"/>
+
+            <Button Text="Multi-line Descriptions"
+                    Clicked="OnMultiLineActionListClicked"
+                    BackgroundColor="#311B92"
+                    Style="{StaticResource DemoButton}"/>
+
+            <Button Text="Description Variations"
+                    Clicked="OnDescriptionVariationsClicked"
+                    BackgroundColor="#673AB7"
+                    Style="{StaticResource DemoButton}"/>
+
+            <Label Text="v1.4.1 Features" FontSize="18" FontAttributes="Bold" Margin="0,15,0,5"/>
+
+            <Button Text="Action Callbacks"
+                    Clicked="OnActionCallbacksClicked"
+                    BackgroundColor="#FFC107"
+                    TextColor="Black"
+                    Style="{StaticResource DemoButton}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

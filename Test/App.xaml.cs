@@ -1,4 +1,6 @@
-﻿namespace Test
+﻿using Test.Pages;
+
+namespace Test
 {
 	public partial class App : Application
 	{
@@ -9,7 +11,7 @@
 
 		protected override Window CreateWindow(IActivationState? activationState)
 		{
-			return new Window(new DialogDemoPage());
+			return new Window(new NavigationPage(new DialogDemoPage()));
 		}
 	}
 }

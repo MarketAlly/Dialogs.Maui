@@ -1,3 +1,5 @@
+using MarketAlly.Dialogs.Maui.Animations;
+using MarketAlly.Dialogs.Maui.Interfaces;
 using Microsoft.Maui.Graphics;
 
 namespace MarketAlly.Dialogs.Maui.Models
@@ -45,10 +47,13 @@ namespace MarketAlly.Dialogs.Maui.Models
         public double DialogCornerRadius { get; set; } = 8;
         public double DialogPadding { get; set; } = 20;
         public double ButtonHeight { get; set; } = 44;
+        public double ButtonCornerRadius { get; set; } = 8;
 
         // Animation
         public uint AnimationDuration { get; set; } = 250;
         public bool EnableAnimation { get; set; } = true;
+        public DialogAnimationType AnimationType { get; set; } = DialogAnimationType.Default;
+        public IDialogAnimation? CustomAnimation { get; set; }
 
         // Shadow
         public bool HasShadow { get; set; } = true;
@@ -80,6 +85,58 @@ namespace MarketAlly.Dialogs.Maui.Models
             SecondaryButtonBorderColor = Color.FromRgba("#3A3A3C"),
             IsDarkMode = true
         };
+
+        #region Design System Factory Methods
+
+        /// <summary>
+        /// Creates a Material Design 3 light theme
+        /// </summary>
+        public static DialogTheme Material() => DialogThemePresets.MaterialLight;
+
+        /// <summary>
+        /// Creates a Material Design 3 dark theme
+        /// </summary>
+        public static DialogTheme MaterialDark() => DialogThemePresets.MaterialDark;
+
+        /// <summary>
+        /// Creates a Material Design 3 theme based on dark mode setting
+        /// </summary>
+        /// <param name="isDark">Whether to create a dark theme</param>
+        public static DialogTheme Material(bool isDark) => isDark ? DialogThemePresets.MaterialDark : DialogThemePresets.MaterialLight;
+
+        /// <summary>
+        /// Creates a Microsoft Fluent Design light theme
+        /// </summary>
+        public static DialogTheme Fluent() => DialogThemePresets.FluentLight;
+
+        /// <summary>
+        /// Creates a Microsoft Fluent Design dark theme
+        /// </summary>
+        public static DialogTheme FluentDark() => DialogThemePresets.FluentDark;
+
+        /// <summary>
+        /// Creates a Microsoft Fluent Design theme based on dark mode setting
+        /// </summary>
+        /// <param name="isDark">Whether to create a dark theme</param>
+        public static DialogTheme Fluent(bool isDark) => isDark ? DialogThemePresets.FluentDark : DialogThemePresets.FluentLight;
+
+        /// <summary>
+        /// Creates an Apple Cupertino light theme
+        /// </summary>
+        public static DialogTheme Cupertino() => DialogThemePresets.CupertinoLight;
+
+        /// <summary>
+        /// Creates an Apple Cupertino dark theme
+        /// </summary>
+        public static DialogTheme CupertinoDark() => DialogThemePresets.CupertinoDark;
+
+        /// <summary>
+        /// Creates an Apple Cupertino theme based on dark mode setting
+        /// </summary>
+        /// <param name="isDark">Whether to create a dark theme</param>
+        public static DialogTheme Cupertino(bool isDark) => isDark ? DialogThemePresets.CupertinoDark : DialogThemePresets.CupertinoLight;
+
+        #endregion
 
         /// <summary>
         /// Clones the current theme
@@ -115,8 +172,11 @@ namespace MarketAlly.Dialogs.Maui.Models
                 DialogCornerRadius = DialogCornerRadius,
                 DialogPadding = DialogPadding,
                 ButtonHeight = ButtonHeight,
+                ButtonCornerRadius = ButtonCornerRadius,
                 AnimationDuration = AnimationDuration,
                 EnableAnimation = EnableAnimation,
+                AnimationType = AnimationType,
+                CustomAnimation = CustomAnimation,
                 HasShadow = HasShadow,
                 IsDarkMode = IsDarkMode
             };

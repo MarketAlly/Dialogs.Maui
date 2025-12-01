@@ -170,7 +170,7 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 FontSize = FontSize,
                 VerticalOptions = LayoutOptions.Center,
                 VerticalTextAlignment = TextAlignment.Center,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 MaxLines = 2,
                 LineBreakMode = LineBreakMode.TailTruncation
             };

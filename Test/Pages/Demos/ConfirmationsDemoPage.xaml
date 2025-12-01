@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Test.Pages.Demos.ConfirmationsDemoPage"
+             Title="Confirmation Dialogs">
+
+    <ContentPage.Resources>
+        <Style x:Key="DemoButton" TargetType="Button">
+            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="HeightRequest" Value="50"/>
+            <Setter Property="CornerRadius" Value="8"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView Padding="15">
+        <VerticalStackLayout Spacing="10">
+
+            <Border BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#333333}"
+                    Padding="10"
+                    StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout>
+                    <Label Text="Last Result:" FontAttributes="Bold"/>
+                    <Label x:Name="ResultLabel"
+                           Text="Tap a button to see the result"
+                           LineBreakMode="WordWrap"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Confirmation Examples" FontSize="18" FontAttributes="Bold" Margin="0,10,0,5"/>
+
+            <Button Text="Yes/No Confirmation"
+                    Clicked="OnYesNoConfirmationClicked"
+                    BackgroundColor="#9C27B0"
+                    Style="{StaticResource DemoButton}"/>
+
+            <Button Text="Delete Confirmation"
+                    Clicked="OnDeleteConfirmationClicked"
+                    BackgroundColor="#F44336"
+                    Style="{StaticResource DemoButton}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

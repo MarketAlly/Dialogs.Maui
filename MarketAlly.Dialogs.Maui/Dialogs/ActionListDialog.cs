@@ -111,7 +111,7 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             var grid = new Grid
             {
                 Padding = new Thickness(10, 10, 10, 10),
-                VerticalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.Fill,
                 BackgroundColor = Colors.Transparent,
                 RowDefinitions =
                 {

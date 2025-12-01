@@ -225,7 +225,7 @@ namespace MarketAlly.Dialogs.Maui.Core
                 TextType = theme.DescriptionTextType,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.Center,
                 MaxLines = 3,
                 Padding = DescriptionPadding
             };
@@ -244,6 +244,7 @@ namespace MarketAlly.Dialogs.Maui.Core
                 TextColor = theme.ButtonTextColor,
                 BackgroundColor = theme.ButtonBackgroundColor,
                 BorderColor = theme.ButtonBorderColor,
+                CornerRadius = (int)theme.ButtonCornerRadius,
                 FontSize = theme.ButtonFontSize,
                 FontFamily = theme.ButtonFontFamily,
                 HeightRequest = theme.ButtonHeight,
@@ -268,6 +269,7 @@ namespace MarketAlly.Dialogs.Maui.Core
                 BackgroundColor = theme.SecondaryButtonBackgroundColor,
                 BorderColor = theme.SecondaryButtonBorderColor,
                 BorderWidth = 1,
+                CornerRadius = (int)theme.ButtonCornerRadius,
                 FontSize = theme.ButtonFontSize,
                 FontFamily = theme.ButtonFontFamily,
                 HeightRequest = theme.ButtonHeight,

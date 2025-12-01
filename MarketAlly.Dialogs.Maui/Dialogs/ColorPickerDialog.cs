@@ -107,7 +107,7 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 TextColor = theme.DescriptionTextColor,
                 PlaceholderColor = theme.DescriptionTextColor.WithAlpha(0.5f),
                 FontSize = 14,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Keyboard = Keyboard.Text,
                 MaxLength = 9 // #AARRGGBB
             };
@@ -154,8 +154,8 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             // Build layout
             var scrollView = new ScrollView
             {
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                HorizontalOptions = LayoutOptions.FillAndExpand
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Fill
             };
 
             var contentStack = new VerticalStackLayout
@@ -280,8 +280,8 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 {
                     Color = color,
                     CornerRadius = 5,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill
                 };
 
                 // Wrap it in a Border for the stroke
@@ -292,8 +292,8 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                     StrokeThickness = 1,
                     Padding = 0,
                     Content = colorBox,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill
                 };
 
                 var tapGesture = new TapGestureRecognizer();
@@ -352,7 +352,7 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 MinimumTrackColor = theme.ButtonBackgroundColor,
                 MaximumTrackColor = theme.BorderColor,
                 ThumbColor = theme.ButtonBackgroundColor,
-                HorizontalOptions = LayoutOptions.FillAndExpand
+                HorizontalOptions = LayoutOptions.Fill
             };
         }
 

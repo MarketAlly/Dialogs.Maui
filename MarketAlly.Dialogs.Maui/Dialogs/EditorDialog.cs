@@ -60,8 +60,8 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                 FontSize = theme.DescriptionFontSize,
                 TextColor = theme.DescriptionTextColor,
                 PlaceholderColor = theme.DescriptionTextColor.WithAlpha(0.5f),
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Fill,
                 Keyboard = keyboard ?? Keyboard.Default,
                 AutoSize = EditorAutoSizeOption.TextChanges,
                 MinimumHeightRequest = minLines * 20, // Approximate line height
@@ -73,8 +73,8 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             // Wrap editor in a scrollview for long content
             _scrollView = new ScrollView
             {
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Fill,
                 Content = _inputEditor
             };
 
