@@ -30,7 +30,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>MarketAlly.Dialogs.Maui</PackageId>
     <Title>MarketAlly Dialogs for .NET MAUI</Title>
-    <Version>1.4.0</Version>
+    <Version>1.4.1</Version>
     <Authors>David H Friedel Jr</Authors>
     <Company>MarketAlly</Company>
     <Description>A comprehensive, production-ready dialog library for .NET MAUI applications featuring 9 dialog types (Alert, Confirm, Prompt, Editor, Loading, ActionList, ColorPicker, Toast, Snackbar), built-in theming with dark/light mode support, internationalization (English, Spanish, French, German), custom icons, and extensive customization options. Supports iOS, Android, Windows, and macOS.</Description>
@@ -43,6 +43,27 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+Version 1.4.1 - ActionItem Callbacks &amp; Toast Horizontal Positioning:
+
+NEW FEATURES:
+• ActionItem Action Callbacks: Define Action or AsyncAction directly on ActionItem for automatic invocation on selection
+  - new ActionItem("Name", () =&gt; DoSomething(), "description") for sync callbacks
+  - new ActionItem("Name", async () =&gt; await DoSomethingAsync(), "description") for async callbacks
+  - Eliminates need for switch statements on returned values
+• ActionListDialog.ShowWithActionsAsync(): New method returning bool for action-based dialogs
+• Toast Horizontal Positioning: Position toasts in corners or edges of screen
+  - ToastHorizontalPosition enum (Left, Center, Right)
+  - Combine with ToastPosition (Top, Bottom) for 6 position options
+  - Corner toasts appear instantly without slide animation
+
+IMPROVEMENTS:
+• ActionItem.InvokeActionAsync() method for manual action invocation
+• ActionItem.HasAction property to check if callback is defined
+• AsyncAction takes precedence over Action when both are set
+
+BREAKING CHANGES:
+• None - fully backward compatible with v1.4.0
+
 Version 1.4.0 - Toast &amp; Snackbar Notifications:
 
 NEW FEATURES:

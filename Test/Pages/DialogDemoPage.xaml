@@ -128,6 +128,11 @@
                     BackgroundColor="DarkOrchid"
                     TextColor="White"/>
 
+            <Button Text="Action Callbacks Demo"
+                    Clicked="OnActionCallbacksClicked"
+                    BackgroundColor="DarkGoldenrod"
+                    TextColor="White"/>
+
             <!-- Color Picker Dialog -->
             <Label Text="Color Picker Dialog"
                    FontSize="18"

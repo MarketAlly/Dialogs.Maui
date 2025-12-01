@@ -31,6 +31,24 @@ namespace MarketAlly.Dialogs.Maui.Models
         public int Value { get; set; }
 
         /// <summary>
+        /// Gets or sets the action to execute when this item is selected.
+        /// When set, this action will be automatically invoked after the dialog is dismissed.
+        /// </summary>
+        public Action? Action { get; set; }
+
+        /// <summary>
+        /// Gets or sets the async action to execute when this item is selected.
+        /// When set, this action will be automatically invoked after the dialog is dismissed.
+        /// Takes precedence over the synchronous Action property.
+        /// </summary>
+        public Func<Task>? AsyncAction { get; set; }
+
+        /// <summary>
+        /// Gets whether this item has an action defined
+        /// </summary>
+        public bool HasAction => Action != null || AsyncAction != null;
+
+        /// <summary>
         /// Gets or sets whether to show the image
         /// </summary>
         public bool ShowImage => !string.IsNullOrEmpty(ImageDark) || !string.IsNullOrEmpty(ImageLight);
@@ -85,11 +103,74 @@ namespace MarketAlly.Dialogs.Maui.Models
         }
 
         /// <summary>
+        /// Creates a new action item with a synchronous action callback
+        /// </summary>
+        /// <param name="name">Display name</param>
+        /// <param name="action">Action to execute when selected</param>
+        /// <param name="detail">Optional description text</param>
+        public ActionItem(string name, Action action, string? detail = null)
+            : this(name, detail, 0)
+        {
+            Action = action;
+        }
+
+        /// <summary>
+        /// Creates a new action item with an async action callback
+        /// </summary>
+        /// <param name="name">Display name</param>
+        /// <param name="asyncAction">Async action to execute when selected</param>
+        /// <param name="detail">Optional description text</param>
+        public ActionItem(string name, Func<Task> asyncAction, string? detail = null)
+            : this(name, detail, 0)
+        {
+            AsyncAction = asyncAction;
+        }
+
+        /// <summary>
+        /// Creates a new action item with a synchronous action callback and icons
+        /// </summary>
+        public ActionItem(string name, Action action, string? detail, string? imageDark, string? imageLight)
+            : this(name, detail, 0)
+        {
+            Action = action;
+            ImageDark = imageDark;
+            ImageLight = imageLight;
+        }
+
+        /// <summary>
+        /// Creates a new action item with an async action callback and icons
+        /// </summary>
+        public ActionItem(string name, Func<Task> asyncAction, string? detail, string? imageDark, string? imageLight)
+            : this(name, detail, 0)
+        {
+            AsyncAction = asyncAction;
+            ImageDark = imageDark;
+            ImageLight = imageLight;
+        }
+
+        /// <summary>
         /// Default constructor
         /// </summary>
         public ActionItem()
         {
             ItemId = Guid.NewGuid();
+        }
+
+        /// <summary>
+        /// Invokes the action associated with this item.
+        /// AsyncAction takes precedence if both are set.
+        /// </summary>
+        /// <returns>A task that completes when the action finishes</returns>
+        public async Task InvokeActionAsync()
+        {
+            if (AsyncAction != null)
+            {
+                await AsyncAction();
+            }
+            else if (Action != null)
+            {
+                Action();
+            }
         }
 
         public override string ToString() => Name;

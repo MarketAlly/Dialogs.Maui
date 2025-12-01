@@ -31,6 +31,7 @@ A comprehensive, production-ready dialog library for .NET MAUI applications with
 
 - **9 Dialog Types**: Alert, Confirm, Prompt, Editor, Loading, Action List, Color Picker, Toast, and Snackbar
 - **Toast & Snackbar**: Lightweight notifications with optional actions and stacking (v1.4.0+)
+- **ActionItem Callbacks**: Define Action/AsyncAction directly on items for automatic invocation (v1.4.1+)
 - **Hierarchical Menus**: Multi-level action list navigation with automatic back navigation (v1.3.0+)
 - **Adaptive Theming**: Automatic dark/light theme detection with full customization
 - **Internationalization**: Built-in support for English, Spanish, French, and German
@@ -346,6 +347,32 @@ var multiLineDialog = new ActionListDialog(
 );
 
 int selectedFeature = await multiLineDialog.ShowAsync();
+
+// Action callbacks (NEW in v1.4.1)
+// Define actions directly on items - no switch statement needed!
+var actionsWithCallbacks = new List<ActionItem>
+{
+    // Synchronous action
+    new ActionItem("Share", () => ShareItem(), "Share with others"),
+
+    // Async action
+    new ActionItem("Save", async () => await SaveItemAsync(), "Save to cloud"),
+
+    // With icons
+    new ActionItem("Delete", async () =>
+    {
+        var confirmed = await ConfirmDialog.ShowAsync("Delete?", "Are you sure?");
+        if (confirmed) await DeleteItemAsync();
+    }, "Remove permanently", "delete_dark.png", "delete_light.png")
+};
+
+// Use ShowWithActionsAsync for cleaner code
+bool wasSelected = await ActionListDialog.ShowWithActionsAsync(
+    "Choose Action",
+    actionsWithCallbacks,
+    "Cancel"
+);
+// Actions are automatically invoked when items are selected!
 ```
 
 ### Color Picker Dialog
@@ -951,6 +978,8 @@ public enum DialogType
 | `Name` | `string` | Display name |
 | `Detail` | `string?` | Optional description |
 | `Value` | `int` | Return value when selected |
+| `Action` | `Action?` | Sync callback invoked on selection (v1.4.1+) |
+| `AsyncAction` | `Func<Task>?` | Async callback invoked on selection (v1.4.1+) |
 | `ImageDark` | `string?` | Dark theme icon path |
 | `ImageLight` | `string?` | Light theme icon path |
 | `SubItems` | `List<ActionItem>?` | Hierarchical sub-menu items |
@@ -958,6 +987,7 @@ public enum DialogType
 | `ShowImage` | `bool` | Whether to show icon (computed) |
 | `HasDetail` | `bool` | Whether detail text exists (computed) |
 | `HasSubItems` | `bool` | Whether sub-items exist (computed) |
+| `HasAction` | `bool` | Whether a callback is defined (computed, v1.4.1+) |
 
 ## Requirements
 
@@ -978,6 +1008,26 @@ public enum DialogType
 - **Mopups** (1.3.4+) - Automatically included
 
 ## Migration Guide
+
+### Upgrading from v1.4.0 to v1.4.1
+
+No breaking changes. New features are additive:
+
+```csharp
+// NEW: ActionItem with callbacks - no more switch statements!
+var actions = new List<ActionItem>
+{
+    new ActionItem("Edit", () => EditItem(), "Edit this item"),
+    new ActionItem("Delete", async () => await DeleteItemAsync(), "Remove permanently")
+};
+
+// NEW: ShowWithActionsAsync for action-based dialogs
+bool wasSelected = await ActionListDialog.ShowWithActionsAsync("Actions", actions);
+
+// NEW: Toast horizontal positioning
+await Toast.ShowAsync("Saved!", DialogType.Success, ToastDuration.Short,
+    ToastPosition.Bottom, ToastHorizontalPosition.Right);
+```
 
 ### Upgrading from v1.3.x to v1.4.0
 
@@ -1264,12 +1314,29 @@ SOFTWARE.
 
 ## Changelog
 
-### Version 1.4.0 (Latest)
+### Version 1.4.1 (Latest)
+
+**New Features:**
+- **ActionItem Action Callbacks**: Define `Action` or `AsyncAction` directly on `ActionItem` for automatic invocation
+  - `new ActionItem("Name", () => DoSomething(), "description")` for sync callbacks
+  - `new ActionItem("Name", async () => await DoAsync(), "description")` for async callbacks
+  - Eliminates need for switch statements on returned values
+- **ActionListDialog.ShowWithActionsAsync()**: New method returning `bool` for action-based dialogs
+- **Toast Horizontal Positioning**: Position toasts in corners or edges of screen
+  - `ToastHorizontalPosition` enum (Left, Center, Right)
+  - Combine with `ToastPosition` (Top, Bottom) for 6 position options
+
+**Improvements:**
+- `ActionItem.InvokeActionAsync()` method for manual action invocation
+- `ActionItem.HasAction` property to check if callback is defined
+- `AsyncAction` takes precedence over `Action` when both are set
+- Corner-positioned toasts appear instantly (no slide-from-center animation)
+
+### Version 1.4.0
 
 **New Features:**
 - **Toast Notifications**: Lightweight, non-interactive notifications for quick status updates
   - Configurable vertical position (Top/Bottom)
-  - Configurable horizontal position (Left/Center/Right) - show toasts in any corner
   - Short (2s) and Long (3.5s) durations, or custom milliseconds
   - Optional icons using existing DialogType
   - Configurable stacking behavior (Stack, Replace, Queue)
@@ -1280,13 +1347,11 @@ SOFTWARE.
   - Returns SnackbarResult (ActionClicked, Dismissed, TimedOut)
   - Configurable stacking behavior
 - **New Localization Strings**: Added DISMISS, UNDO, RETRY translations for all 4 languages
-- **ToastHorizontalPosition Enum**: Left, Center, Right positioning for toasts
 
 **Improvements:**
 - Non-blocking notifications allow continued user interaction
 - Multiple notifications can stack vertically
 - Consistent theming with existing dialog components
-- Corner-positioned toasts appear instantly (no slide-from-center animation)
 
 ### Version 1.3.0
 

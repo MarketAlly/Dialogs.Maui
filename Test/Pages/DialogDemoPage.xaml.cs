@@ -435,6 +435,67 @@ public partial class DialogDemoPage : ContentPage
         }
     }
 
+    private async void OnActionCallbacksClicked(object sender, EventArgs e)
+    {
+        // Demonstrate the new Action and AsyncAction properties on ActionItem
+        // Instead of handling the result via switch/case, the action is invoked automatically
+
+        var actions = new List<ActionItem>
+        {
+            // Synchronous action
+            new ActionItem("Show Alert", () =>
+            {
+                ResultLabel.Text = "Alert action triggered!";
+            }, "Triggers a synchronous action"),
+
+            // Async action
+            new ActionItem("Load Data", async () =>
+            {
+                ResultLabel.Text = "Loading data...";
+                await Task.Delay(1000); // Simulate async work
+                ResultLabel.Text = "Data loaded successfully!";
+            }, "Triggers an async action with delay"),
+
+            // Action with icons
+            new ActionItem("Save File", async () =>
+            {
+                ResultLabel.Text = "Saving file...";
+                await Task.Delay(500);
+                ResultLabel.Text = "File saved!";
+            }, "Save with async callback", "task_alt_black_48dp", "task_alt_white_48dp"),
+
+            // Action that shows another dialog
+            new ActionItem("Confirm Delete", async () =>
+            {
+                var confirmed = await ConfirmDialog.ShowAsync(
+                    "Confirm Delete",
+                    "Are you sure you want to delete this item?",
+                    DialogType.Warning);
+                ResultLabel.Text = confirmed ? "Item deleted!" : "Delete cancelled";
+            }, "Opens a confirmation dialog", "error_outline_black_48dp", "error_outline_white_48dp"),
+
+            // Action that shows a toast
+            new ActionItem("Show Toast", async () =>
+            {
+                await Toast.ShowAsync("Action completed!", DialogType.Success);
+                ResultLabel.Text = "Toast was shown via action callback";
+            }, "Displays a toast notification", "info_black_48dp", "info_white_48dp")
+        };
+
+        ResultLabel.Text = "Select an action - callback will execute automatically";
+
+        // Use ShowWithActionsAsync for cleaner code when using action callbacks
+        bool wasSelected = await ActionListDialog.ShowWithActionsAsync(
+            "Action Callbacks Demo",
+            actions,
+            "Cancel");
+
+        if (!wasSelected)
+        {
+            ResultLabel.Text = "Action callbacks demo cancelled";
+        }
+    }
+
     private async void OnChainedDialogsClicked(object sender, EventArgs e)
     {
         ResultLabel.Text = "Starting chained dialogs test...";

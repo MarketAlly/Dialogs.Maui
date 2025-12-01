@@ -323,6 +323,29 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
         }
 
         /// <summary>
+        /// Shows an action list dialog with action callbacks.
+        /// When an item with an Action or AsyncAction is selected, the callback is automatically invoked.
+        /// </summary>
+        /// <param name="title">Dialog title</param>
+        /// <param name="items">List of action items (use Action or AsyncAction property for callbacks)</param>
+        /// <param name="cancelText">Custom cancel button text</param>
+        /// <returns>True if an action was selected and executed, false if cancelled</returns>
+        public static async Task<bool> ShowWithActionsAsync(
+            string title,
+            List<ActionItem> items,
+            string? cancelText = null)
+        {
+            // Check if an action list is already showing
+            if (MopupService.Instance.PopupStack.Any(p => p is ActionListDialog))
+                return false;
+
+            var dialog = new ActionListDialog(title, items, cancelText);
+            await MopupService.Instance.PushAsync(dialog);
+            var result = await dialog._taskCompletionSource.Task;
+            return result != -1;
+        }
+
+        /// <summary>
         /// Shows this instance of the dialog
         /// </summary>
         public async Task<int> ShowAsync()
@@ -439,6 +462,13 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
                     // before returning the result. This prevents "duplicate key" errors
                     // when the caller immediately shows another dialog.
                     await MopupService.Instance.PopAsync(!CurrentTheme.EnableAnimation);
+
+                    // Invoke the action if one is defined
+                    if (item.HasAction)
+                    {
+                        await item.InvokeActionAsync();
+                    }
+
                     _taskCompletionSource.TrySetResult(item.Value);
                 }
             }

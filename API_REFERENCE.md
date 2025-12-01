@@ -674,6 +674,14 @@ public static Task<int> ShowAsync(
 Shows action list dialog. Returns selected item's `Value` or `-1` if cancelled.
 
 ```csharp
+public static Task<bool> ShowWithActionsAsync(
+    string title,
+    List<ActionItem> items,
+    string? cancelText = null)
+```
+Shows action list dialog with action callbacks. When an item with `Action` or `AsyncAction` is selected, the callback is automatically invoked. Returns `true` if an action was selected, `false` if cancelled.
+
+```csharp
 public static Task HideAsync()
 ```
 Hides the currently displayed action list dialog.
@@ -1668,6 +1676,26 @@ public ActionItem(
 ```
 Creates item with full customization.
 
+```csharp
+public ActionItem(string name, Action action, string? detail = null)
+```
+Creates item with synchronous action callback.
+
+```csharp
+public ActionItem(string name, Func<Task> asyncAction, string? detail = null)
+```
+Creates item with async action callback.
+
+```csharp
+public ActionItem(string name, Action action, string? detail, string? imageDark, string? imageLight)
+```
+Creates item with synchronous action callback and icons.
+
+```csharp
+public ActionItem(string name, Func<Task> asyncAction, string? detail, string? imageDark, string? imageLight)
+```
+Creates item with async action callback and icons.
+
 #### Properties
 
 | Property | Type | Description |
@@ -1675,6 +1703,8 @@ Creates item with full customization.
 | `Name` | `string` | Display name (required) |
 | `Detail` | `string?` | Optional description text |
 | `Value` | `int` | Return value when selected |
+| `Action` | `Action?` | Synchronous callback invoked on selection |
+| `AsyncAction` | `Func<Task>?` | Async callback invoked on selection (takes precedence) |
 | `ImageDark` | `string?` | Icon path for dark theme |
 | `ImageLight` | `string?` | Icon path for light theme |
 | `ItemId` | `Guid` | Unique identifier |
@@ -1687,6 +1717,14 @@ Creates item with full customization.
 | `ShowImage` | `bool` | `true` if any image is set |
 | `HasDetail` | `bool` | `true` if Detail is not empty |
 | `HasSubItems` | `bool` | `true` if SubItems has items |
+| `HasAction` | `bool` | `true` if Action or AsyncAction is set |
+
+#### Methods
+
+```csharp
+public async Task InvokeActionAsync()
+```
+Invokes the action associated with this item. AsyncAction takes precedence if both are set.
 
 #### Examples
 
@@ -1704,6 +1742,24 @@ var item = new ActionItem(
     3,
     "share_dark.png",
     "share_light.png");
+
+// With synchronous action callback
+var syncItem = new ActionItem("Show Alert", () =>
+{
+    Console.WriteLine("Alert shown!");
+}, "Displays an alert message");
+
+// With async action callback
+var asyncItem = new ActionItem("Load Data", async () =>
+{
+    await LoadDataAsync();
+}, "Loads data from server");
+
+// With action and icons
+var actionWithIcons = new ActionItem("Save", async () =>
+{
+    await SaveFileAsync();
+}, "Save to cloud", "save_dark.png", "save_light.png");
 
 // Hierarchical menu
 var fileMenu = new ActionItem("File", "File operations", 0)
@@ -1723,6 +1779,16 @@ var fileMenu = new ActionItem("File", "File operations", 0)
         }
     }
 };
+
+// Using actions with ActionListDialog
+var actions = new List<ActionItem>
+{
+    new ActionItem("Edit", () => EditItem(), "Modify this item"),
+    new ActionItem("Delete", async () => await DeleteAsync(), "Remove permanently")
+};
+
+bool wasSelected = await ActionListDialog.ShowWithActionsAsync("Actions", actions);
+// Actions are automatically invoked when selected!
 ```
 
 ---
@@ -1941,7 +2007,8 @@ DialogService.Instance.SetLocalization(french);
 
 | Version | Changes |
 |---------|---------|
-| 1.4.0 | Added Toast and Snackbar notifications with horizontal positioning (Left, Center, Right) |
+| 1.4.1 | Added ActionItem Action/AsyncAction callbacks, ShowWithActionsAsync, Toast horizontal positioning |
+| 1.4.0 | Added Toast and Snackbar notifications |
 | 1.3.0 | Added hierarchical menus, fixed duplicate key bug |
 | 1.2.0 | Added TitleMaxLines, TitleLineBreakMode, HTML descriptions |
 | 1.1.0 | Added multi-line descriptions, configurable line break modes |
@@ -1949,4 +2016,4 @@ DialogService.Instance.SetLocalization(french);
 
 ---
 
-*Generated for MarketAlly.Dialogs.Maui v1.4.0*
+*Generated for MarketAlly.Dialogs.Maui v1.4.1*
