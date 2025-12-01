@@ -18,7 +18,7 @@ A comprehensive, production-ready dialog library for .NET MAUI applications with
 - [Theming](#theming)
 - [Localization](#localization)
 - [Advanced Features](#advanced-features)
-- [API Reference](#api-reference)
+- [API Reference](#api-reference) | [Full API Documentation](API_REFERENCE.md)
 - [Requirements](#requirements)
 - [Migration Guide](#migration-guide)
 - [Troubleshooting](#troubleshooting)
@@ -855,6 +855,8 @@ var dialog = new AlertDialog("Title", "Message")
 ```
 
 ## API Reference
+
+> **For comprehensive API documentation including all methods, properties, and examples, see [API_REFERENCE.md](API_REFERENCE.md)**
 
 ### DialogService (Singleton)
 
