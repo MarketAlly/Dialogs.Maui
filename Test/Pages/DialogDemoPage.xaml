@@ -270,6 +270,32 @@
                     BackgroundColor="#AB47BC"
                     TextColor="White"/>
 
+            <!-- Toast Position Examples -->
+            <Label Text="Toast Positions"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   Margin="0,15,0,5"/>
+
+            <Button Text="Toast Bottom Left"
+                    Clicked="OnBottomLeftToastClicked"
+                    BackgroundColor="#00897B"
+                    TextColor="White"/>
+
+            <Button Text="Toast Bottom Right"
+                    Clicked="OnBottomRightToastClicked"
+                    BackgroundColor="#00ACC1"
+                    TextColor="White"/>
+
+            <Button Text="Toast Top Left"
+                    Clicked="OnTopLeftToastClicked"
+                    BackgroundColor="#43A047"
+                    TextColor="White"/>
+
+            <Button Text="Toast Top Right"
+                    Clicked="OnTopRightToastClicked"
+                    BackgroundColor="#7CB342"
+                    TextColor="White"/>
+
             <!-- Snackbar Notifications -->
             <Label Text="Snackbar Notifications"
                    FontSize="18"

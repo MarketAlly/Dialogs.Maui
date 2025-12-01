@@ -14,6 +14,7 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
     {
         private static readonly List<Snackbar> _activeSnackbars = new();
         private static readonly object _lock = new();
+        private static readonly SemaphoreSlim _showSemaphore = new(1, 1);
         private static SnackbarStackBehavior _stackBehavior = SnackbarStackBehavior.Stack;
         private static int _maxVisibleSnackbars = 3;
 
@@ -139,6 +140,13 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             CloseWhenBackgroundIsClicked = true;
             HasSystemPadding = true;
             base.BackgroundColor = Colors.Transparent;
+
+            // Disable Android accessibility handling to allow multiple Snackbar instances
+            // Without this, Mopups uses Type as a dictionary key which prevents multiple snackbars
+            DisableAndroidAccessibilityHandling = true;
+
+            // Note: Custom animations have rendering issues on some platforms.
+            // Using Mopups default fade animation for reliability.
 
             var theme = DialogService.Instance.CurrentTheme;
 
@@ -317,23 +325,34 @@ namespace MarketAlly.Dialogs.Maui.Dialogs
             int? durationMs,
             ToastPosition position)
         {
-            await HandleStackBehavior();
+            Snackbar snackbar;
 
-            var snackbar = new Snackbar(message, actionText, actionCallback, iconType, position);
-
-            lock (_lock)
+            // Use semaphore to prevent race conditions when showing multiple snackbars rapidly
+            await _showSemaphore.WaitAsync();
+            try
             {
-                _activeSnackbars.Add(snackbar);
-                UpdateSnackbarPositions();
+                await HandleStackBehavior();
+
+                snackbar = new Snackbar(message, actionText, actionCallback, iconType, position);
+
+                lock (_lock)
+                {
+                    _activeSnackbars.Add(snackbar);
+                    UpdateSnackbarPositions();
+                }
+
+                // Check if already in stack (shouldn't happen, but safety check)
+                if (!MopupService.Instance.PopupStack.Contains(snackbar))
+                {
+                    await MopupService.Instance.PushAsync(snackbar, animate: true);
+                }
+            }
+            finally
+            {
+                _showSemaphore.Release();
             }
 
-            // Check if already in popup stack to avoid duplicate key error
-            if (!MopupService.Instance.PopupStack.Contains(snackbar))
-            {
-                await MopupService.Instance.PushAsync(snackbar, animate: true);
-            }
-
-            // Start auto-dismiss timer if duration is specified
+            // Start auto-dismiss timer if duration is specified (outside semaphore)
             if (durationMs.HasValue)
             {
                 snackbar._autoDismissCts = new CancellationTokenSource();

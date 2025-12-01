@@ -981,6 +981,30 @@ public partial class DialogDemoPage : ContentPage
         ResultLabel.Text = "Multiple stacked toasts shown";
     }
 
+    private async void OnBottomLeftToastClicked(object sender, EventArgs e)
+    {
+        await Toast.ShowAsync("Bottom Left!", DialogType.Info, ToastDuration.Short, ToastPosition.Bottom, ToastHorizontalPosition.Left);
+        ResultLabel.Text = "Bottom left toast shown";
+    }
+
+    private async void OnBottomRightToastClicked(object sender, EventArgs e)
+    {
+        await Toast.ShowAsync("Bottom Right!", DialogType.Success, ToastDuration.Short, ToastPosition.Bottom, ToastHorizontalPosition.Right);
+        ResultLabel.Text = "Bottom right toast shown";
+    }
+
+    private async void OnTopLeftToastClicked(object sender, EventArgs e)
+    {
+        await Toast.ShowAsync("Top Left!", DialogType.Warning, ToastDuration.Short, ToastPosition.Top, ToastHorizontalPosition.Left);
+        ResultLabel.Text = "Top left toast shown";
+    }
+
+    private async void OnTopRightToastClicked(object sender, EventArgs e)
+    {
+        await Toast.ShowAsync("Top Right!", DialogType.Error, ToastDuration.Short, ToastPosition.Top, ToastHorizontalPosition.Right);
+        ResultLabel.Text = "Top right toast shown";
+    }
+
     // Snackbar Event Handlers
 
     private async void OnSimpleSnackbarClicked(object sender, EventArgs e)

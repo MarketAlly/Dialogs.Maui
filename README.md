@@ -408,13 +408,28 @@ await Toast.ShowAsync("Operation complete!", DialogType.Success);
 // With icon and duration
 await Toast.ShowAsync("Something went wrong", DialogType.Error, ToastDuration.Long);
 
-// Full customization (position, duration)
+// Vertical position (top or bottom)
 await Toast.ShowAsync(
     "This appears at the top",
     DialogType.Info,
     ToastDuration.Short,
     ToastPosition.Top
 );
+
+// Full position control (vertical + horizontal)
+await Toast.ShowAsync(
+    "Bottom right corner!",
+    DialogType.Success,
+    ToastDuration.Short,
+    ToastPosition.Bottom,
+    ToastHorizontalPosition.Right
+);
+
+// All corner positions
+await Toast.ShowAsync("Top Left", DialogType.Info, ToastDuration.Short, ToastPosition.Top, ToastHorizontalPosition.Left);
+await Toast.ShowAsync("Top Right", DialogType.Warning, ToastDuration.Short, ToastPosition.Top, ToastHorizontalPosition.Right);
+await Toast.ShowAsync("Bottom Left", DialogType.Success, ToastDuration.Short, ToastPosition.Bottom, ToastHorizontalPosition.Left);
+await Toast.ShowAsync("Bottom Right", DialogType.Error, ToastDuration.Short, ToastPosition.Bottom, ToastHorizontalPosition.Right);
 
 // Custom duration in milliseconds
 await Toast.ShowAsync("Custom timing", DialogType.None, 5000, ToastPosition.Bottom);
@@ -424,7 +439,8 @@ await Toast.DismissAllAsync();
 ```
 
 **Toast Features:**
-- **Position**: Top or Bottom of screen (default: Bottom)
+- **Vertical Position**: Top or Bottom of screen (default: Bottom)
+- **Horizontal Position**: Left, Center, or Right (default: Center)
 - **Duration**: Short (2s) or Long (3.5s), or custom milliseconds
 - **Icons**: Supports all DialogType icons
 - **Stacking**: Multiple toasts can stack, replace, or queue
@@ -1252,7 +1268,8 @@ SOFTWARE.
 
 **New Features:**
 - **Toast Notifications**: Lightweight, non-interactive notifications for quick status updates
-  - Configurable position (Top/Bottom)
+  - Configurable vertical position (Top/Bottom)
+  - Configurable horizontal position (Left/Center/Right) - show toasts in any corner
   - Short (2s) and Long (3.5s) durations, or custom milliseconds
   - Optional icons using existing DialogType
   - Configurable stacking behavior (Stack, Replace, Queue)
@@ -1263,11 +1280,13 @@ SOFTWARE.
   - Returns SnackbarResult (ActionClicked, Dismissed, TimedOut)
   - Configurable stacking behavior
 - **New Localization Strings**: Added DISMISS, UNDO, RETRY translations for all 4 languages
+- **ToastHorizontalPosition Enum**: Left, Center, Right positioning for toasts
 
 **Improvements:**
 - Non-blocking notifications allow continued user interaction
 - Multiple notifications can stack vertically
 - Consistent theming with existing dialog components
+- Corner-positioned toasts appear instantly (no slide-from-center animation)
 
 ### Version 1.3.0
 

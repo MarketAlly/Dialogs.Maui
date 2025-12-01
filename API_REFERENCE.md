@@ -24,6 +24,7 @@ Complete API documentation for all public classes, methods, properties, and enum
   - [ActionItem](#actionitem)
 - [Enumerations](#enumerations)
   - [ToastPosition](#toastposition)
+  - [ToastHorizontalPosition](#toasthorizontalposition)
   - [ToastDuration](#toastduration)
   - [ToastStackBehavior](#toaststackbehavior)
   - [SnackbarDuration](#snackbarduration)
@@ -929,8 +930,8 @@ Displays lightweight, non-interactive toast notifications.
 | `PaddingVertical` | `double` | `8` | Vertical padding inside toast |
 | `IconSize` | `double` | `20` | Icon dimensions |
 | `MaxWidth` | `double` | `350` | Maximum toast width |
-| `ScreenEdgeMargin` | `double` | `80` | Distance from screen edge |
-| `StackSpacing` | `double` | `50` | Space between stacked toasts |
+| `ScreenEdgeMargin` | `double` | `50` | Distance from screen edge |
+| `StackSpacing` | `double` | `52` | Space between stacked toasts |
 
 #### Static Methods
 
@@ -959,7 +960,17 @@ public static Task ShowAsync(
     ToastDuration duration,
     ToastPosition position)
 ```
-Shows a toast with full customization using enum duration.
+Shows a toast with vertical position (horizontally centered).
+
+```csharp
+public static Task ShowAsync(
+    string message,
+    DialogType iconType,
+    ToastDuration duration,
+    ToastPosition position,
+    ToastHorizontalPosition horizontalPosition)
+```
+Shows a toast with full position customization (corners, edges, center).
 
 ```csharp
 public static Task ShowAsync(
@@ -968,7 +979,17 @@ public static Task ShowAsync(
     int durationMs,
     ToastPosition position)
 ```
-Shows a toast with custom duration in milliseconds.
+Shows a toast with custom duration in milliseconds (horizontally centered).
+
+```csharp
+public static Task ShowAsync(
+    string message,
+    DialogType iconType,
+    int durationMs,
+    ToastPosition position,
+    ToastHorizontalPosition horizontalPosition)
+```
+Shows a toast with custom duration and full position customization.
 
 ```csharp
 public static Task DismissAllAsync()
@@ -1009,6 +1030,38 @@ await Toast.ShowAsync(
     DialogType.None,
     5000,
     ToastPosition.Bottom);
+
+// Corner positioning - bottom right
+await Toast.ShowAsync(
+    "Downloaded!",
+    DialogType.Success,
+    ToastDuration.Short,
+    ToastPosition.Bottom,
+    ToastHorizontalPosition.Right);
+
+// Corner positioning - top left
+await Toast.ShowAsync(
+    "New message",
+    DialogType.Info,
+    ToastDuration.Short,
+    ToastPosition.Top,
+    ToastHorizontalPosition.Left);
+
+// Bottom left corner
+await Toast.ShowAsync(
+    "File saved",
+    DialogType.Success,
+    ToastDuration.Long,
+    ToastPosition.Bottom,
+    ToastHorizontalPosition.Left);
+
+// Top right corner
+await Toast.ShowAsync(
+    "Update available",
+    DialogType.Warning,
+    ToastDuration.Long,
+    ToastPosition.Top,
+    ToastHorizontalPosition.Right);
 
 // Configure appearance
 Toast.BackgroundColor = Color.FromRgba("#2196F3");
@@ -1686,6 +1739,25 @@ public enum ToastPosition
 }
 ```
 
+### ToastHorizontalPosition
+
+```csharp
+public enum ToastHorizontalPosition
+{
+    Left,    // Left side of screen
+    Center,  // Center of screen (default)
+    Right    // Right side of screen
+}
+```
+
+Combine with `ToastPosition` for corner positioning:
+- Bottom + Left = Bottom-left corner
+- Bottom + Center = Bottom center (default)
+- Bottom + Right = Bottom-right corner
+- Top + Left = Top-left corner
+- Top + Center = Top center
+- Top + Right = Top-right corner
+
 ### ToastDuration
 
 ```csharp
@@ -1869,7 +1941,7 @@ DialogService.Instance.SetLocalization(french);
 
 | Version | Changes |
 |---------|---------|
-| 1.4.0 | Added Toast and Snackbar notifications |
+| 1.4.0 | Added Toast and Snackbar notifications with horizontal positioning (Left, Center, Right) |
 | 1.3.0 | Added hierarchical menus, fixed duplicate key bug |
 | 1.2.0 | Added TitleMaxLines, TitleLineBreakMode, HTML descriptions |
 | 1.1.0 | Added multi-line descriptions, configurable line break modes |
